@@ -8,6 +8,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>VinylVault feat. DJ Lloyd</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.jpg">
 <style>
   :root {
     --bg-deep: #090518;
@@ -59,33 +61,33 @@
     font-weight: 700;
   }
 
-  /* SPLASH SCREEN ORIGINALE CON LOGO LIBERO SENZA CORNICE */
+  /* SPLASH SCREEN SENZA CORNICE */
   #splash {
     position: fixed;
     inset: 0;
     z-index: 9999;
-    background: radial-gradient(circle at 50% 38%, #25135e 0%, #090518 82%);
+    background: #090518;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    animation: splashAutoFade 1.35s ease-out forwards;
+    padding: 16px;
+    animation: splashAutoFade 2.6s ease-out forwards;
+  }
+  #splash img {
+    width: 100%;
+    max-width: 390px;
+    max-height: 92dvh;
+    object-fit: contain;
+    border: none;
+    outline: none;
   }
   #splash.hidden { display: none !important; }
   @keyframes splashAutoFade {
-    0%, 72% { opacity: 1; visibility: visible; pointer-events: auto; }
+    0%, 80% { opacity: 1; visibility: visible; pointer-events: auto; }
     100% { opacity: 0; visibility: hidden; pointer-events: none; }
   }
-  @keyframes extractVinyl {
-    0% { transform: translateX(0px) rotate(0deg); }
-    100% { transform: translateX(46px) rotate(55deg); }
-  }
-  .splash-record {
-    animation: extractVinyl 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    transform-origin: center;
-  }
 
-  /* HEADER */
+  /* HEADER CON NUOVO LOGO SENZA CORNICE */
   header {
     position: sticky;
     top: 0;
@@ -109,10 +111,14 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    background: transparent;
+  }
+  .brand-logo-img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
     border: none;
     border-radius: 0;
-    box-shadow: none;
+    background: transparent;
   }
   .brand-title {
     font-size: 17px;
@@ -496,7 +502,7 @@
     flex-shrink: 0;
   }
 
-  /* CAMERA LIVE - POSIZIONAMENTO ASSOLUTO PERFETTAMENTE CENTRATO */
+  /* CAMERA LIVE */
   .cam-box {
     position: relative;
     width: 100%;
@@ -656,47 +662,9 @@
 
 <div id="errBanner"></div>
 
-<!-- SPLASH SCREEN CON LOGO LIBERO SENZA CORNICE -->
+<!-- SPLASH SCREEN CON NUOVO LOGO SENZA CORNICE -->
 <div id="splash" onclick="this.classList.add('hidden')">
-  <svg width="210" height="145" viewBox="0 0 210 145" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Disco in vinile animato dietro la mascotte -->
-    <g class="splash-record">
-      <circle cx="96" cy="74" r="44" fill="#0b1120" stroke="#38bdf8" stroke-width="2.5"/>
-      <circle cx="96" cy="74" r="32" stroke="#1e293b" stroke-width="1.2"/>
-      <circle cx="96" cy="74" r="22" stroke="#334155" stroke-width="1"/>
-      <circle cx="96" cy="74" r="14" fill="#f59e0b"/>
-      <circle cx="96" cy="74" r="4.2" fill="#090518"/>
-    </g>
-    <!-- DJ Lloyd libero senza alcuna cornice intorno -->
-    <g transform="translate(26, 20) scale(1.55)">
-      <!-- Corona a 4 triangolini arancio-ambra ad arco -->
-      <polygon points="15,17 11,9 21,14" fill="#ea580c"/>
-      <polygon points="24,13 23,5 30,12" fill="#f59e0b"/>
-      <polygon points="34,12 41,5 40,13" fill="#fbbf24"/>
-      <polygon points="43,14 53,9 49,17" fill="#ea580c"/>
-      <!-- Testa tonda verde smeraldo brillante -->
-      <circle cx="32" cy="36" r="18" fill="#10b981"/>
-      <ellipse cx="32" cy="39" rx="14" ry="11" fill="#34d399" fill-opacity="0.45"/>
-      <!-- Fascia cuffie bicolore (viola sopra, ciano sotto) -->
-      <path d="M13 28C17 17 47 17 51 28L49 32C44 23 20 23 15 32Z" fill="#8b5cf6"/>
-      <path d="M14 29C19 20 45 20 50 29L49 33C44 25 20 25 15 33Z" fill="#38bdf8"/>
-      <!-- Padiglioni cuffie ovali viola scuro con bordo spesso ambra -->
-      <rect x="6" y="27" width="9" height="18" rx="4.5" fill="#1e144f" stroke="#f59e0b" stroke-width="2.6"/>
-      <rect x="49" y="27" width="9" height="18" rx="4.5" fill="#1e144f" stroke="#f59e0b" stroke-width="2.6"/>
-      <!-- Occhiali da sole Blues Brothers con riflessi ciano e ambra -->
-      <rect x="14" y="28" width="16" height="9.5" rx="2.5" fill="#090518"/>
-      <rect x="34" y="28" width="16" height="9.5" rx="2.5" fill="#090518"/>
-      <rect x="13" y="28" width="38" height="2.4" rx="1" fill="#090518"/>
-      <line x1="20" y1="30" x2="25" y2="35.5" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
-      <line x1="40" y1="30" x2="45" y2="35.5" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round"/>
-      <!-- Due puntini narici + sorriso curvo sottile -->
-      <circle cx="29.5" cy="40.5" r="1.4" fill="#064e3b"/>
-      <circle cx="34.5" cy="40.5" r="1.4" fill="#064e3b"/>
-      <path d="M24 44.5Q32 49.5 40 44.5" stroke="#064e3b" stroke-width="2.3" stroke-linecap="round" fill="none"/>
-    </g>
-  </svg>
-  <div style="font-size:24px;font-weight:900;color:#fff;margin-top:6px;letter-spacing:-0.3px;">VinylVault</div>
-  <div style="font-size:12px;font-weight:800;color:#fbbf24;letter-spacing:1.6px;">FEAT. DJ LLOYD</div>
+  <img src="splash.gif?v=4" alt="VinylVault feat. DJ Lloyd">
 </div>
 
 <!-- FAILSAFE IMMEDIATO SPLASH -->
@@ -704,41 +672,16 @@
   setTimeout(function () {
     var sp = document.getElementById('splash');
     if (sp) sp.classList.add('hidden');
-  }, 1300);
+  }, 2600);
 </script>
 
 <div id="toast"></div>
 
-<!-- HEADER -->
+<!-- HEADER CON NUOVO LOGO SENZA CORNICE -->
 <header>
   <div class="brand">
     <div class="logo-wrap">
-      <svg width="44" height="44" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Corona a 4 triangolini arancio-ambra ad arco -->
-        <polygon points="15,17 11,9 21,14" fill="#ea580c"/>
-        <polygon points="24,13 23,5 30,12" fill="#f59e0b"/>
-        <polygon points="34,12 41,5 40,13" fill="#fbbf24"/>
-        <polygon points="43,14 53,9 49,17" fill="#ea580c"/>
-        <!-- Testa tonda verde smeraldo brillante -->
-        <circle cx="32" cy="36" r="18" fill="#10b981"/>
-        <ellipse cx="32" cy="39" rx="14" ry="11" fill="#34d399" fill-opacity="0.45"/>
-        <!-- Fascia cuffie bicolore (viola sopra, ciano sotto) -->
-        <path d="M13 28C17 17 47 17 51 28L49 32C44 23 20 23 15 32Z" fill="#8b5cf6"/>
-        <path d="M14 29C19 20 45 20 50 29L49 33C44 25 20 25 15 33Z" fill="#38bdf8"/>
-        <!-- Padiglioni cuffie ovali viola scuro con bordo spesso ambra -->
-        <rect x="6" y="27" width="9" height="18" rx="4.5" fill="#1e144f" stroke="#f59e0b" stroke-width="2.6"/>
-        <rect x="49" y="27" width="9" height="18" rx="4.5" fill="#1e144f" stroke="#f59e0b" stroke-width="2.6"/>
-        <!-- Occhiali da sole Blues Brothers con riflessi ciano e ambra -->
-        <rect x="14" y="28" width="16" height="9.5" rx="2.5" fill="#090518"/>
-        <rect x="34" y="28" width="16" height="9.5" rx="2.5" fill="#090518"/>
-        <rect x="13" y="28" width="38" height="2.4" rx="1" fill="#090518"/>
-        <line x1="20" y1="30" x2="25" y2="35.5" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
-        <line x1="40" y1="30" x2="45" y2="35.5" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round"/>
-        <!-- Due puntini narici + sorriso curvo sottile -->
-        <circle cx="29.5" cy="40.5" r="1.4" fill="#064e3b"/>
-        <circle cx="34.5" cy="40.5" r="1.4" fill="#064e3b"/>
-        <path d="M24 44.5Q32 49.5 40 44.5" stroke="#064e3b" stroke-width="2.3" stroke-linecap="round" fill="none"/>
-      </svg>
+      <img src="icon.jpg?v=4" alt="DJ Lloyd" class="brand-logo-img">
     </div>
     <div>
       <div class="brand-title">VinylVault</div>
@@ -760,7 +703,7 @@
   <!-- TAB 1: SCAFFALE -->
   <section id="tab-shelf" class="tab-view active">
     <h2>
-      <span>Scaffale Kallax</span>
+      <span>Scaffale</span>
       <button class="btn btn-outline" style="padding:6px 11px;font-size:12px;" onclick="openGenreAnalysis()">Analizza Generi</button>
     </h2>
     <div id="kallaxGrid" class="kallax-grid"></div>
