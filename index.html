@@ -1,698 +1,1974 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#0d0821">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>VinylVault feat. DJ Lloyd</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon.jpg">
-  <style>
-    :root {
-      --bg-deep: #090518;
-      --bg-panel: #130b2e;
-      --bg-card: #19183d;
-      --bg-input: #0c0721;
-      --border-subtle: rgba(139, 92, 246, 0.3);
-      --border-amber: rgba(245, 158, 11, 0.58);
-      --purple: #8b5cf6;
-      --purple-neon: #a855f7;
-      --blue-neon: #38bdf8;
-      --amber: #f59e0b;
-      --amber-glow: #fbbf24;
-      --emerald: #10b981;
-      --rose: #f43f5e;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body {
-      background: linear-gradient(180deg, #0c0722 0%, #070412 100%);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
-      min-height: 100dvh;
-      overflow-x: hidden;
-    }
-    .hidden { display: none !important; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0d0821">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>VinylVault feat. DJ Lloyd</title>
+<style>
+  :root {
+    --bg-deep: #090518;
+    --bg-panel: #130b2e;
+    --bg-card: #19103d;
+    --bg-input: #0c0721;
+    --border-subtle: rgba(139, 92, 246, 0.3);
+    --border-amber: rgba(245, 158, 11, 0.58);
+    --purple: #8b5cf6;
+    --purple-neon: #a855f7;
+    --blue-neon: #38bdf8;
+    --amber: #f59e0b;
+    --amber-glow: #fbbf24;
+    --emerald: #10b981;
+    --rose: #f43f5e;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+  }
 
-    /* SPLASH SCREEN CENTRATO E SENZA SBORDI */
-    #splash {
-      position: fixed; inset: 0; z-index: 9999; background: #090518;
-      display: flex; align-items: center; justify-content: center;
-      padding: 16px;
-      transition: opacity 0.4s ease;
-    }
-    #splash img {
-      width: 100%;
-      max-width: 390px;
-      max-height: 92dvh;
-      object-fit: contain;
-      border-radius: 20px;
-    }
-    #splash.fade-out { opacity: 0; pointer-events: none; }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-    /* HEADER CON ICONA CENTRATA */
-    header {
-      position: sticky; top: 0; z-index: 50; background: #10092b;
-      border-bottom: 1px solid var(--border-subtle); padding: 10px 14px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .brand-icon {
-      width: 44px; height: 44px; border-radius: 12px;
-      object-fit: cover; object-position: center center;
-      border: 1.5px solid var(--amber);
-      background: #1a1140;
-      flex-shrink: 0;
-    }
-    .brand-title { font-size: 17px; font-weight: 800; color: #fff; line-height: 1.1; }
-    .brand-sub { font-size: 10px; font-weight: 800; color: var(--amber-glow); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
-    .header-right { display: flex; align-items: center; gap: 8px; }
-    .stat-pill {
-      background: #1a1140; border: 1px solid var(--border-amber); border-radius: 999px;
-      padding: 5px 11px; font-size: 11px; font-weight: 700; color: var(--amber-glow);
-    }
-    .icon-btn {
-      background: #1a1140; border: 1px solid var(--border-subtle); border-radius: 12px;
-      color: var(--text-main); width: 38px; height: 38px; display: flex;
-      align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
-    }
+  html, body {
+    background: linear-gradient(180deg, #0c0722 0%, #070412 100%);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
 
-    main { padding: 16px 14px 96px 14px; max-width: 600px; margin: 0 auto; }
-    .tab-view { display: none; }
-    .tab-view.active { display: block; }
-    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    h2 { font-size: 19px; font-weight: 800; }
+  /* BANNER DIAGNOSTICO RUNTIME */
+  #errBanner {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    background: #7f1d1d;
+    color: #fecaca;
+    border-bottom: 1px solid #f43f5e;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+  }
 
-    /* KALLAX */
-    .kallax-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
-    .kube {
-      background: var(--bg-card); border: 1px solid var(--border-subtle);
-      border-radius: 12px; padding: 10px 8px; cursor: pointer; text-align: center;
-    }
-    .kube.selected { border-color: var(--amber); background: #23194d; }
-    .kube-title { font-size: 13px; font-weight: 800; color: var(--amber-glow); }
-    .kube-count { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-    .kube-bar { height: 4px; background: #0c0721; border-radius: 4px; margin-top: 6px; overflow: hidden; }
-    .kube-fill { height: 100%; background: var(--blue-neon); }
+  /* SPLASH SCREEN ORIGINALE CON LOGO LIBERO SENZA CORNICE */
+  #splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: radial-gradient(circle at 50% 38%, #25135e 0%, #090518 82%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: splashAutoFade 1.35s ease-out forwards;
+  }
+  #splash.hidden { display: none !important; }
+  @keyframes splashAutoFade {
+    0%, 72% { opacity: 1; visibility: visible; pointer-events: auto; }
+    100% { opacity: 0; visibility: hidden; pointer-events: none; }
+  }
+  @keyframes extractVinyl {
+    0% { transform: translateX(0px) rotate(0deg); }
+    100% { transform: translateX(46px) rotate(55deg); }
+  }
+  .splash-record {
+    animation: extractVinyl 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    transform-origin: center;
+  }
 
-    /* CARDS & FORMS */
-    .card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
-    label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--blue-neon); margin-bottom: 6px; }
-    input, select, textarea {
-      width: 100%; background: var(--bg-input); border: 1px solid var(--border-subtle);
-      border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 14px; margin-bottom: 12px;
-      font-family: inherit;
-    }
-    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .btn { border: none; border-radius: 12px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; color: #fff; }
-    .btn-primary { background: linear-gradient(90deg, var(--purple) 0%, var(--blue-neon) 100%); }
-    .btn-amber { background: linear-gradient(90deg, var(--amber) 0%, #ea580c 100%); }
-    .btn-sm { padding: 6px 10px; font-size: 12px; width: auto; }
+  /* HEADER */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: #10092b;
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-wrap {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .brand-title {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .brand-sub {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--amber-glow);
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .stat-pill {
+    background: #1a1140;
+    border: 1px solid var(--border-amber);
+    border-radius: 999px;
+    padding: 5px 11px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--amber-glow);
+    white-space: nowrap;
+  }
+  .icon-btn {
+    background: #1a1140;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-main);
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
 
-    .pill-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
-    .pill-tab {
-      flex: 1; background: var(--bg-card); border: 1px solid var(--border-subtle);
-      color: var(--text-muted); padding: 8px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer;
-    }
-    .pill-tab.active { background: var(--purple); color: #fff; border-color: var(--purple-neon); }
+  /* MAIN */
+  main {
+    padding: 14px 14px 92px 14px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .tab-view { display: none; }
+  .tab-view.active { display: block; }
 
-    /* VINYL ITEM CON COPERTINA */
-    .vinyl-item {
-      background: var(--bg-card); border: 1px solid var(--border-subtle);
-      border-radius: 12px; padding: 10px; margin-bottom: 10px;
-      display: flex; justify-content: space-between; align-items: center; gap: 12px;
-    }
-    .vinyl-cover {
-      width: 56px; height: 56px; border-radius: 8px; object-fit: cover;
-      background: #0c0721; border: 1px solid var(--border-subtle); flex-shrink: 0;
-    }
-    .vinyl-info { flex: 1; min-width: 0; }
-    .vinyl-info h4 { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .vinyl-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .badge {
-      display: inline-block; background: #281d59; color: var(--amber-glow);
-      font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; margin-top: 5px;
-    }
+  h2 {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
 
-    /* DJ LLOYD SECTION */
-    .lloyd-hero {
-      display: flex; align-items: center; gap: 12px;
-      background: linear-gradient(135deg, #1f1449 0%, #130b2e 100%);
-      border: 1px solid var(--border-amber); border-radius: 14px; padding: 14px; margin-bottom: 14px;
-    }
-    .lloyd-hero img {
-      width: 60px; height: 60px; border-radius: 14px; object-fit: cover; border: 2px solid var(--amber);
-    }
-    .lloyd-output {
-      background: var(--bg-input); border: 1px solid var(--border-subtle);
-      border-radius: 12px; padding: 12px; font-size: 13px; line-height: 1.5;
-      color: var(--text-main); white-space: pre-wrap; margin-top: 10px;
-    }
+  /* CARDS & FORM */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--blue-neon);
+    margin-bottom: 5px;
+  }
+  input, select, textarea {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    border-radius: 11px;
+    color: #fff;
+    padding: 10px 12px;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 10px;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--amber);
+  }
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
 
-    /* BOTTOM NAV */
-    nav.bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; background: #10092b;
-      border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-around;
-      padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); z-index: 50;
-    }
-    .nav-btn {
-      background: none; border: none; color: var(--text-muted); font-size: 11px;
-      font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer;
-    }
-    .nav-btn.active { color: var(--amber-glow); }
-    .nav-btn span { font-size: 18px; }
-  </style>
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: none;
+    border-radius: 11px;
+    padding: 11px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .btn:active { opacity: 0.88; }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--purple-neon) 0%, #6d28d9 100%);
+    color: #fff;
+    width: 100%;
+  }
+  .btn-amber {
+    background: linear-gradient(135deg, var(--amber-glow) 0%, #d97706 100%);
+    color: #090518;
+    width: 100%;
+  }
+  .btn-outline {
+    background: #211552;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-main);
+  }
+  .btn-subtle-gallery {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: rgba(19, 11, 46, 0.7);
+    border: 1px dashed rgba(148, 163, 184, 0.35);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-amazon {
+    background: #232f3e;
+    border: 1px solid #ff9900;
+    color: #ff9900;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  .btn-discogs {
+    background: #1e1b4b;
+    border: 1px solid var(--blue-neon);
+    color: var(--blue-neon);
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  .btn-emerald {
+    background: #064e3b;
+    border: 1px solid var(--emerald);
+    color: #6ee7b7;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  .btn-danger {
+    background: #4c0519;
+    border: 1px solid var(--rose);
+    color: #fda4af;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  /* SEGMENTED BAR IN AGGIUNGI */
+  .seg-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    background: #0c0721;
+    padding: 5px;
+    border-radius: 13px;
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 14px;
+  }
+  .seg-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    padding: 9px 4px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+  }
+  .seg-btn.active {
+    background: linear-gradient(135deg, #2b1a6e 0%, #1c114a 100%);
+    border-color: var(--amber);
+    color: var(--amber-glow);
+  }
+
+  /* MODE SWITCH */
+  .mode-switch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .mode-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    padding: 10px 8px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .mode-btn.active {
+    background: #271863;
+    border-color: var(--purple-neon);
+    color: #fff;
+  }
+
+  /* KALLAX GRID */
+  .kallax-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .cube-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    padding: 10px;
+    cursor: pointer;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .cube-card.selected {
+    border-color: var(--amber);
+    background: #231659;
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.18);
+  }
+  .cube-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--amber-glow);
+    margin-bottom: 6px;
+  }
+  .cube-progress {
+    width: 100%;
+    height: 5px;
+    background: #0c0721;
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .cube-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue-neon), var(--purple-neon));
+    border-radius: 99px;
+  }
+  .sub-bars {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 3px;
+  }
+  .sub-pill {
+    background: #0c0721;
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    border-radius: 6px;
+    padding: 4px 1px;
+    text-align: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sub-pill.has-items {
+    border-color: var(--blue-neon);
+    background: rgba(56, 189, 248, 0.14);
+    color: #fff;
+  }
+
+  /* VINYL ITEM */
+  .vinyl-item {
+    display: flex;
+    gap: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    padding: 11px;
+    margin-bottom: 10px;
+  }
+  .vinyl-cover {
+    width: 68px;
+    height: 68px;
+    border-radius: 10px;
+    object-fit: cover;
+    background: #0c0721;
+    border: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+  }
+  .vinyl-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .vinyl-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .vinyl-artist {
+    font-size: 12px;
+    color: var(--blue-neon);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 6px;
+    background: #251959;
+    color: #cbd5e1;
+  }
+  .badge-amber { background: rgba(245, 158, 11, 0.18); color: var(--amber-glow); border: 1px solid rgba(245, 158, 11, 0.4); }
+  .badge-blue { background: rgba(56, 189, 248, 0.16); color: var(--blue-neon); border: 1px solid rgba(56, 189, 248, 0.4); }
+  .badge-emerald { background: rgba(16, 185, 129, 0.16); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); }
+  .badge-rose { background: rgba(244, 63, 94, 0.18); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.4); }
+
+  /* AUTOCOMPLETE */
+  .ac-wrap { position: relative; }
+  .ac-list {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    z-index: 80;
+    background: #160f38;
+    border: 1px solid var(--amber);
+    border-radius: 11px;
+    max-height: 230px;
+    overflow-y: auto;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.8);
+    display: none;
+  }
+  .ac-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-bottom: 1px solid #291d61;
+    cursor: pointer;
+  }
+  .ac-item:last-child { border-bottom: none; }
+  .ac-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: #090518;
+    flex-shrink: 0;
+  }
+
+  /* CAMERA LIVE - POSIZIONAMENTO ASSOLUTO PERFETTAMENTE CENTRATO */
+  .cam-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-height: 290px;
+    background: radial-gradient(circle at center, #1b1145 0%, #090518 100%);
+    border: 2px solid var(--amber);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  .cam-box video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cam-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 18px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .cam-frame-guide {
+    position: absolute;
+    inset: 14%;
+    border: 1.5px dashed rgba(251, 191, 36, 0.65);
+    border-radius: 12px;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .laser-line {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: var(--amber-glow);
+    box-shadow: 0 0 10px var(--amber);
+    top: 50%;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* DJ LLOYD */
+  .lloyd-card {
+    background: linear-gradient(160deg, #211654 0%, #110a2e 100%);
+    border: 2px solid var(--purple-neon);
+    border-radius: 18px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .lloyd-cover {
+    width: 175px;
+    height: 175px;
+    border-radius: 14px;
+    object-fit: cover;
+    border: 2px solid var(--amber);
+    margin: 0 auto 12px auto;
+    display: block;
+    background: #090518;
+  }
+  .loc-box {
+    background: rgba(245, 158, 11, 0.16);
+    border: 1px solid var(--amber);
+    border-radius: 11px;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--amber-glow);
+    cursor: pointer;
+  }
+
+  /* BOTTOM NAV */
+  nav.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    background: #10092b;
+    border-top: 1px solid var(--border-subtle);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  }
+  .nav-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .nav-btn.active {
+    color: var(--amber-glow);
+  }
+
+  /* MODAL */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(5, 3, 15, 0.88);
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 12px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-sheet {
+    background: #160e38;
+    border: 1px solid var(--amber);
+    border-radius: 18px;
+    width: 100%;
+    max-width: 540px;
+    max-height: 88dvh;
+    overflow-y: auto;
+    padding: 16px;
+  }
+
+  /* TOAST */
+  #toast {
+    position: fixed;
+    top: 66px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    background: #211552;
+    border: 1px solid var(--amber);
+    color: #fff;
+    padding: 9px 15px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    display: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.65);
+    white-space: nowrap;
+  }
+</style>
 </head>
 <body>
 
-  <!-- SPLASH SCREEN -->
-  <div id="splash" onclick="closeSplash()">
-    <img src="splash.gif?v=3" alt="VinylVault feat. DJ Lloyd">
+<div id="errBanner"></div>
+
+<!-- SPLASH SCREEN CON LOGO LIBERO SENZA CORNICE -->
+<div id="splash" onclick="this.classList.add('hidden')">
+  <svg width="210" height="145" viewBox="0 0 210 145" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Disco in vinile animato dietro la mascotte -->
+    <g class="splash-record">
+      <circle cx="96" cy="74" r="44" fill="#0b1120" stroke="#38bdf8" stroke-width="2.5"/>
+      <circle cx="96" cy="74" r="32" stroke="#1e293b" stroke-width="1.2"/>
+      <circle cx="96" cy="74" r="22" stroke="#334155" stroke-width="1"/>
+      <circle cx="96" cy="74" r="14" fill="#f59e0b"/>
+      <circle cx="96" cy="74" r="4.2" fill="#090518"/>
+    </g>
+    <!-- DJ Lloyd libero senza alcuna cornice intorno -->
+    <g transform="translate(26, 20) scale(1.55)">
+      <!-- Corona a 4 triangolini arancio-ambra ad arco -->
+      <polygon points="15,17 11,9 21,14" fill="#ea580c"/>
+      <polygon points="24,13 23,5 30,12" fill="#f59e0b"/>
+      <polygon points="34,12 41,5 40,13" fill="#fbbf24"/>
+      <polygon points="43,14 53,9 49,17" fill="#ea580c"/>
+      <!-- Testa tonda verde smeraldo brillante -->
+      <circle cx="32" cy="36" r="18" fill="#10b981"/>
+      <ellipse cx="32" cy="39" rx="14" ry="11" fill="#34d399" fill-opacity="0.45"/>
+      <!-- Fascia cuffie bicolore (viola sopra, ciano sotto) -->
+      <path d="M13 28C17 17 47 17 51 28L49 32C44 23 20 23 15 32Z" fill="#8b5cf6"/>
+      <path d="M14 29C19 20 45 20 50 29L49 33C44 25 20 25 15 33Z" fill="#38bdf8"/>
+      <!-- Padiglioni cuffie ovali viola scuro con bordo spesso ambra -->
+      <rect x="6" y="27" width="9" height="18" rx="4.5" fill="#1e144f" stroke="#f59e0b" stroke-width="2.6"/>
+      <rect x="49" y="27" width="9" height="18" rx="4.5" fill="#1e144f" stroke="#f59e0b" stroke-width="2.6"/>
+      <!-- Occhiali da sole Blues Brothers con riflessi ciano e ambra -->
+      <rect x="14" y="28" width="16" height="9.5" rx="2.5" fill="#090518"/>
+      <rect x="34" y="28" width="16" height="9.5" rx="2.5" fill="#090518"/>
+      <rect x="13" y="28" width="38" height="2.4" rx="1" fill="#090518"/>
+      <line x1="20" y1="30" x2="25" y2="35.5" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="40" y1="30" x2="45" y2="35.5" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round"/>
+      <!-- Due puntini narici + sorriso curvo sottile -->
+      <circle cx="29.5" cy="40.5" r="1.4" fill="#064e3b"/>
+      <circle cx="34.5" cy="40.5" r="1.4" fill="#064e3b"/>
+      <path d="M24 44.5Q32 49.5 40 44.5" stroke="#064e3b" stroke-width="2.3" stroke-linecap="round" fill="none"/>
+    </g>
+  </svg>
+  <div style="font-size:24px;font-weight:900;color:#fff;margin-top:6px;letter-spacing:-0.3px;">VinylVault</div>
+  <div style="font-size:12px;font-weight:800;color:#fbbf24;letter-spacing:1.6px;">FEAT. DJ LLOYD</div>
+</div>
+
+<!-- FAILSAFE IMMEDIATO SPLASH -->
+<script>
+  setTimeout(function () {
+    var sp = document.getElementById('splash');
+    if (sp) sp.classList.add('hidden');
+  }, 1300);
+</script>
+
+<div id="toast"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="brand">
+    <div class="logo-wrap">
+      <svg width="44" height="44" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Corona a 4 triangolini arancio-ambra ad arco -->
+        <polygon points="15,17 11,9 21,14" fill="#ea580c"/>
+        <polygon points="24,13 23,5 30,12" fill="#f59e0b"/>
+        <polygon points="34,12 41,5 40,13" fill="#fbbf24"/>
+        <polygon points="43,14 53,9 49,17" fill="#ea580c"/>
+        <!-- Testa tonda verde smeraldo brillante -->
+        <circle cx="32" cy="36" r="18" fill="#10b981"/>
+        <ellipse cx="32" cy="39" rx="14" ry="11" fill="#34d399" fill-opacity="0.45"/>
+        <!-- Fascia cuffie bicolore (viola sopra, ciano sotto) -->
+        <path d="M13 28C17 17 47 17 51 28L49 32C44 23 20 23 15 32Z" fill="#8b5cf6"/>
+        <path d="M14 29C19 20 45 20 50 29L49 33C44 25 20 25 15 33Z" fill="#38bdf8"/>
+        <!-- Padiglioni cuffie ovali viola scuro con bordo spesso ambra -->
+        <rect x="6" y="27" width="9" height="18" rx="4.5" fill="#1e144f" stroke="#f59e0b" stroke-width="2.6"/>
+        <rect x="49" y="27" width="9" height="18" rx="4.5" fill="#1e144f" stroke="#f59e0b" stroke-width="2.6"/>
+        <!-- Occhiali da sole Blues Brothers con riflessi ciano e ambra -->
+        <rect x="14" y="28" width="16" height="9.5" rx="2.5" fill="#090518"/>
+        <rect x="34" y="28" width="16" height="9.5" rx="2.5" fill="#090518"/>
+        <rect x="13" y="28" width="38" height="2.4" rx="1" fill="#090518"/>
+        <line x1="20" y1="30" x2="25" y2="35.5" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="40" y1="30" x2="45" y2="35.5" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- Due puntini narici + sorriso curvo sottile -->
+        <circle cx="29.5" cy="40.5" r="1.4" fill="#064e3b"/>
+        <circle cx="34.5" cy="40.5" r="1.4" fill="#064e3b"/>
+        <path d="M24 44.5Q32 49.5 40 44.5" stroke="#064e3b" stroke-width="2.3" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand-title">VinylVault</div>
+      <div class="brand-sub">FEAT. DJ LLOYD</div>
+    </div>
   </div>
+  <div class="header-right">
+    <div class="stat-pill" id="headerStats">0 dischi • € 0</div>
+    <button class="icon-btn" onclick="openSettings()" aria-label="Impostazioni">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+  </div>
+</header>
 
-  <!-- HEADER -->
-  <header>
-    <div class="brand">
-      <img src="icon.jpg?v=3" alt="DJ Lloyd" class="brand-icon">
-      <div>
-        <div class="brand-title">VinylVault</div>
-        <div class="brand-sub">Feat. DJ Lloyd</div>
+<main>
+  <!-- TAB 1: SCAFFALE -->
+  <section id="tab-shelf" class="tab-view active">
+    <h2>
+      <span>Scaffale Kallax</span>
+      <button class="btn btn-outline" style="padding:6px 11px;font-size:12px;" onclick="openGenreAnalysis()">Analizza Generi</button>
+    </h2>
+    <div id="kallaxGrid" class="kallax-grid"></div>
+    <div class="card" id="cubeDetailCard">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <strong id="selectedCubeTitle" style="color:var(--amber-glow);font-size:15px;">Cubo A1</strong>
+        <span id="selectedCubeCount" style="font-size:11px;color:var(--text-muted);">0 dischi</span>
       </div>
+      <div id="subSectionsLegend" style="font-size:11px;color:var(--blue-neon);margin-bottom:10px;line-height:1.5;"></div>
+      <div id="cubeVinylList"></div>
     </div>
-    <div class="header-right">
-      <div class="stat-pill" id="stats-pill">0 dischi • € 0</div>
-      <button class="icon-btn" onclick="switchTab('settings')">⚙️</button>
-    </div>
-  </header>
+  </section>
 
-  <main>
-    <!-- TAB 1: SCAFFALE KALLAX -->
-    <div id="view-kallax" class="tab-view active">
-      <div class="section-header">
-        <h2>Scaffale Kallax</h2>
-        <button class="btn btn-amber btn-sm" onclick="switchTab('add')">+ Aggiungi</button>
-      </div>
-      <div class="kallax-grid" id="kallax-grid"></div>
-      <div class="card">
-        <h3 id="selected-cube-title" style="color:var(--amber-glow);font-size:15px;margin-bottom:8px;">Cubo A1</h3>
-        <div id="cube-discs-list"></div>
-      </div>
-    </div>
+  <!-- TAB 2: COLLEZIONE & WISHLIST -->
+  <section id="tab-collection" class="tab-view">
+    <h2>
+      <span id="colHeaderTitle">La Tua Collezione</span>
+      <button class="btn btn-amber" style="width:auto;padding:7px 12px;font-size:12px;" onclick="openWishModal()">+ Wishlist</button>
+    </h2>
 
-    <!-- TAB 2: COLLEZIONE & WISHLIST -->
-    <div id="view-collection" class="tab-view">
-      <div class="section-header">
-        <h2>La Tua Collezione</h2>
-        <button class="btn btn-amber btn-sm" onclick="switchTab('add')">+ Aggiungi</button>
-      </div>
-      <div class="pill-tabs">
-        <button class="pill-tab active" id="sub-owned" onclick="setCollectionFilter('owned')">In Scaffale</button>
-        <button class="pill-tab" id="sub-wish" onclick="setCollectionFilter('wish')">Wishlist Mercatini</button>
-      </div>
-      <input type="text" id="search-input" placeholder="Cerca per artista, titolo, genere o etichetta..." oninput="renderCollection()">
-      <div id="collection-list"></div>
+    <div class="mode-switch">
+      <button id="btnModeShelf" class="mode-btn active" onclick="setCollectionMode('shelf')">In Scaffale (<span id="countShelf">0</span>)</button>
+      <button id="btnModeWish" class="mode-btn" onclick="setCollectionMode('wish')">Wishlist Mercatini (<span id="countWish">0</span>)</button>
     </div>
 
-    <!-- TAB 3: AGGIUNGI DISCO (DISCOGS + BARCODE + COPERTINA) -->
-    <div id="view-add" class="tab-view">
-      <div class="section-header">
-        <h2>Aggiungi Vinile</h2>
-      </div>
+    <input type="search" id="searchColInput" placeholder="Cerca per artista, titolo, genere o etichetta..." oninput="renderCollection()">
 
-      <div class="card">
-        <label>Ricerca Discogs (Titolo o Codice a Barre)</label>
-        <div style="display:flex;gap:8px;margin-bottom:10px;">
-          <input type="text" id="discogs-query" placeholder="Artista, album o barcode..." style="margin-bottom:0;">
-          <button class="btn btn-primary btn-sm" onclick="searchDiscogs()">Cerca</button>
-        </div>
-        <button class="btn btn-amber btn-sm" style="width:100%;" onclick="startBarcodeScan()">📷 Scansiona Codice a Barre con Fotocamera</button>
-        <div id="scanner-container" style="display:none; margin-top:10px;">
-          <video id="interactive" width="100%" height="180" style="border-radius:10px;background:#000;object-fit:cover;"></video>
-          <p style="font-size:11px;color:var(--amber-glow);margin-top:4px;text-align:center;">Inquadra il codice a barre del vinile</p>
-        </div>
-        <div id="discogs-results" style="margin-top:10px;"></div>
-      </div>
-
-      <div class="card">
-        <label>Copertina Vinile (URL o Foto/File)</label>
-        <input type="text" id="f-cover" placeholder="https://... (compilato in automatico da Discogs)">
-        <input type="file" id="f-cover-file" accept="image/*" onchange="handleCoverUpload(event)">
-        <div id="cover-preview-wrap" style="display:none;margin-bottom:12px;text-align:center;">
-          <img id="cover-preview" src="" style="width:90px;height:90px;border-radius:10px;object-fit:cover;border:1px solid var(--amber);">
-        </div>
-
-        <label>Artista *</label>
-        <input type="text" id="f-artist" placeholder="Es. Pink Floyd">
-        <label>Titolo Album *</label>
-        <input type="text" id="f-title" placeholder="Es. The Dark Side of the Moon">
-
-        <div class="row-2">
-          <div>
-            <label>Genere</label>
-            <input type="text" id="f-genre" placeholder="Rock, Jazz, House...">
-          </div>
-          <div>
-            <label>Etichetta</label>
-            <input type="text" id="f-label" placeholder="Harvest, Blue Note...">
-          </div>
-        </div>
-        <div class="row-2">
-          <div>
-            <label>Cubo Kallax</label>
-            <select id="f-cube">
-              <option value="A1">Cubo A1</option>
-              <option value="A2">Cubo A2</option>
-              <option value="A3">Cubo A3</option>
-              <option value="A4">Cubo A4</option>
-              <option value="B1">Cubo B1</option>
-              <option value="B2">Cubo B2</option>
-              <option value="B3">Cubo B3</option>
-              <option value="B4">Cubo B4</option>
-            </select>
-          </div>
-          <div>
-            <label>Stato</label>
-            <select id="f-status">
-              <option value="owned">In Scaffale</option>
-              <option value="wish">Wishlist Mercatini</option>
-            </select>
-          </div>
-        </div>
-        <div class="row-2">
-          <div>
-            <label>Prezzo / Valore (€)</label>
-            <input type="number" id="f-price" placeholder="25" value="0">
-          </div>
-          <div>
-            <label>Quantità</label>
-            <input type="number" id="f-qty" value="1" min="1">
-          </div>
-        </div>
-        <button class="btn btn-primary" onclick="saveDisc()">Salva nel Vault</button>
+    <div id="wishSummaryBar" class="card" style="display:none;border-color:var(--amber);">
+      <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;">
+        <span>Target Discogs: <span id="wishTotalTarget" style="color:var(--amber-glow);">€ 0,00</span></span>
+        <span>Rif. Amazon.it: <span id="wishTotalAmazon" style="color:#ff9900;">€ 0,00</span></span>
       </div>
     </div>
 
-    <!-- TAB 4: DJ LLOYD AI & SETLIST -->
-    <div id="view-lloyd" class="tab-view">
-      <div class="lloyd-hero">
-        <img src="icon.jpg?v=3" alt="DJ Lloyd">
+    <div id="collectionList"></div>
+  </section>
+
+  <!-- TAB 3: AGGIUNGI VINILE -->
+  <section id="tab-add" class="tab-view">
+    <h2>Aggiungi Vinile</h2>
+
+    <div class="seg-bar">
+      <button id="seg-ai" class="seg-btn active" onclick="switchAddMode('ai')">Copertina AI</button>
+      <button id="seg-bar" class="seg-btn" onclick="switchAddMode('bar')">Codice Barre</button>
+      <button id="seg-cat" class="seg-btn" onclick="switchAddMode('cat')">Discogs / Cat</button>
+    </div>
+
+    <!-- MODE AI: FOTOCAMERA LIVE PRINCIPALE + GALLERIA DISCRETA -->
+    <div id="add-mode-ai" class="card">
+      <div class="label">1. Scansione Live Copertina con Gemini AI</div>
+      <div class="cam-box" onclick="ensureAiCameraStarted()">
+        <video id="aiVideo" autoplay playsinline muted></video>
+        <div class="cam-frame-guide"></div>
+        <div id="aiCamPlaceholder" class="cam-placeholder">
+          <div style="font-weight:800;color:var(--amber-glow);margin-bottom:4px;font-size:13px;">Tocca per attivare la Fotocamera Live</div>
+          <div style="font-size:11px;color:var(--text-muted);">Inquadra la copertina dentro il riquadro ambra</div>
+        </div>
+      </div>
+      <button class="btn btn-amber" style="margin-bottom:10px;padding:13px;font-size:14px;" onclick="captureAndAnalyzeAI()">Scatta & Analizza con AI</button>
+      <label class="btn-subtle-gallery">
+        <span>Oppure carica da raccolta foto / galleria</span>
+        <input type="file" accept="image/*" style="display:none;" onchange="handleGalleryUpload(event)">
+      </label>
+    </div>
+
+    <!-- MODE BARCODE -->
+    <div id="add-mode-bar" class="card" style="display:none;">
+      <div class="label">Scanner Codice a Barre (EAN / UPC)</div>
+      <div class="cam-box" style="max-height:210px;" onclick="startBarcodeScanner()">
+        <video id="barVideo" autoplay playsinline muted></video>
+        <div class="laser-line"></div>
+        <div id="barCamPlaceholder" class="cam-placeholder">
+          <div style="font-weight:800;color:var(--amber-glow);margin-bottom:4px;font-size:13px;">Tocca qui per avviare lo scanner laser</div>
+          <div style="font-size:11px;color:var(--text-muted);">Inquadra il codice a barre sul retro della copertina</div>
+        </div>
+      </div>
+      <div class="label">Oppure inserisci codice manuale</div>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="barcodeInput" placeholder="Es. 5099902987613" style="margin-bottom:0;">
+        <button class="btn btn-amber" style="width:auto;" onclick="searchDiscogsByBarcode()">Cerca</button>
+      </div>
+    </div>
+
+    <!-- MODE DISCOGS / CAT -->
+    <div id="add-mode-cat" class="card" style="display:none;">
+      <div class="label">Ricerca Catalogo Solo Vinili Discogs</div>
+      <input type="text" id="catQueryInput" placeholder="Artista, titolo o numero catalogo (es. SHVL 804)">
+      <button class="btn btn-primary" onclick="searchDiscogsCatalog()">Cerca Vinili su Discogs</button>
+      <div id="catResultsList" style="margin-top:10px;"></div>
+    </div>
+
+    <!-- FORM DETTAGLI -->
+    <div class="card">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px;">
+        <img id="formCoverPreview" class="vinyl-cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%230d0724'/%3E%3Ccircle cx='40' cy='40' r='26' fill='%231e1b4b' stroke='%23f59e0b' stroke-width='2'/%3E%3Ccircle cx='40' cy='40' r='7' fill='%23f59e0b'/%3E%3C/svg%3E" alt="Cover">
+        <div style="flex:1;">
+          <div class="label">Autocompilamento Vinili Discogs</div>
+          <div style="font-size:11px;color:var(--text-muted);">Scrivi artista o titolo per compilare in automatico dati e quotazioni (solo formati in vinile).</div>
+        </div>
+      </div>
+
+      <div class="ac-wrap">
+        <label class="label">Artista *</label>
+        <input type="text" id="fArtist" placeholder="Es. Pink Floyd" oninput="triggerDiscogsAC('add')">
+        <div id="acListAdd" class="ac-list"></div>
+      </div>
+
+      <label class="label">Titolo Album *</label>
+      <input type="text" id="fTitle" placeholder="Es. The Dark Side of the Moon" oninput="triggerDiscogsAC('add')">
+
+      <div class="row-2">
         <div>
-          <h2 style="margin-bottom:2px;">DJ Lloyd Selector</h2>
-          <p style="font-size:12px;color:var(--text-muted);">Consigli sui tuoi vinili, scalette DJ e analisi della collezione.</p>
+          <label class="label">Anno</label>
+          <input type="text" id="fYear" placeholder="1973">
+        </div>
+        <div>
+          <label class="label">Genere</label>
+          <input type="text" id="fGenre" placeholder="Rock / Prog">
         </div>
       </div>
 
-      <div class="card">
-        <label>Chiedi a DJ Lloyd</label>
-        <textarea id="lloyd-prompt" rows="3" placeholder="Es. Crea una scaletta DJ coerente e ben mixata scegliendo tra i vinili della mia collezione..."></textarea>
-        <div class="row-2" style="margin-bottom:8px;">
-          <button class="btn btn-amber btn-sm" style="width:100%;" onclick="quickLloyd('setlist')">🎛️ Genera Setlist</button>
-          <button class="btn btn-amber btn-sm" style="width:100%;" onclick="quickLloyd('gems')">💎 Gemme del Vault</button>
+      <div class="row-2">
+        <div>
+          <label class="label">Etichetta / Cat#</label>
+          <input type="text" id="fLabel" placeholder="Harvest - SHVL 804">
         </div>
-        <button class="btn btn-primary" onclick="askDjLloyd()">Chiedi a DJ Lloyd</button>
-        <div id="lloyd-response" class="lloyd-output hidden"></div>
+        <div>
+          <label class="label">Valore / Target (€)</label>
+          <input type="number" step="0.01" id="fPrice" placeholder="35.00">
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div>
+          <label class="label">Cubo Scaffale</label>
+          <select id="fCube"></select>
+        </div>
+        <div>
+          <label class="label">Sottosezione (1-5)</label>
+          <select id="fSub"></select>
+        </div>
+      </div>
+
+      <input type="hidden" id="fReleaseId">
+      <input type="hidden" id="fCoverData">
+
+      <button class="btn btn-primary" style="margin-bottom:8px;" onclick="saveVinylToShelf()">Salva nello Scaffale</button>
+      <button class="btn btn-outline" style="width:100%;border-color:var(--amber);color:var(--amber-glow);" onclick="saveFormDirectlyToWishlist()">Salva in Wishlist (Da cercare ai mercatini)</button>
+    </div>
+  </section>
+
+  <!-- TAB 4: DJ LLOYD -->
+  <section id="tab-lloyd" class="tab-view">
+    <h2>DJ Lloyd Consiglia</h2>
+    <div class="card">
+      <div class="row-2">
+        <div>
+          <label class="label">Mood del momento</label>
+          <select id="lloydMood" onchange="pickNextLloyd()">
+            <option value="any">Qualsiasi Mood</option>
+            <option value="rock">Energia / Rock</option>
+            <option value="jazz">Notturno / Jazz & Soul</option>
+            <option value="chill">Relax / Acustico</option>
+            <option value="groove">Groove / Funk & Pop</option>
+          </select>
+        </div>
+        <div>
+          <label class="label">Stagione / Meteo</label>
+          <select id="lloydWeather" onchange="pickNextLloyd()">
+            <option value="any">Qualsiasi Clima</option>
+            <option value="rain">Pioggia / Sera d'Autunno</option>
+            <option value="sun">Sole / Pomeriggio</option>
+            <option value="winter">Freddo / Camino</option>
+          </select>
+        </div>
       </div>
     </div>
 
-    <!-- TAB 5: IMPOSTAZIONI & BACKUP -->
-    <div id="view-settings" class="tab-view">
-      <h2>Impostazioni & Backup</h2>
-      <div class="card">
-        <label>Discogs Personal Access Token</label>
-        <input type="text" id="set-discogs" placeholder="Inserisci token Discogs">
-        <label>Gemini API Key (per DJ Lloyd AI)</label>
-        <input type="password" id="set-gemini" placeholder="AIzaSy...">
-        <button class="btn btn-primary" onclick="saveSettings()">Salva Impostazioni</button>
+    <div id="lloydDeckContainer"></div>
+  </section>
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nav-shelf" onclick="switchTab('shelf')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <span>Scaffale</span>
+  </button>
+  <button class="nav-btn" id="nav-collection" onclick="switchTab('collection')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+    <span>Collezione</span>
+  </button>
+  <button class="nav-btn" id="nav-add" onclick="switchTab('add')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    <span>Aggiungi</span>
+  </button>
+  <button class="nav-btn" id="nav-lloyd" onclick="switchTab('lloyd')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <span>DJ Lloyd</span>
+  </button>
+</nav>
+
+<!-- MODAL: AGGIUNGI WISHLIST -->
+<div id="wishModal" class="modal-backdrop">
+  <div class="modal-sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <strong style="font-size:16px;color:var(--amber-glow);">Aggiungi a Wishlist Mercatini</strong>
+      <button class="btn btn-outline" style="padding:5px 10px;" onclick="closeModal('wishModal')">Chiudi</button>
+    </div>
+
+    <div class="ac-wrap">
+      <label class="label">Artista (Autocompilamento Solo Vinili) *</label>
+      <input type="text" id="wArtist" placeholder="Digita artista per suggerimenti Discogs..." oninput="onWishInputChanged()">
+      <div id="acListWish" class="ac-list"></div>
+    </div>
+
+    <label class="label">Titolo Album *</label>
+    <input type="text" id="wTitle" placeholder="Digita titolo album..." oninput="onWishInputChanged()">
+
+    <div class="row-2">
+      <div>
+        <label class="label">Target Discogs (€)</label>
+        <input type="number" step="0.01" id="wTargetPrice" placeholder="25.00">
       </div>
-      <div class="card">
-        <label>Esporta / Importa Dati JSON</label>
-        <button class="btn btn-amber" style="margin-bottom:10px;" onclick="exportData()">Scarica Backup JSON</button>
-        <input type="file" id="import-file" accept=".json" onchange="importData(event)">
+      <div>
+        <label class="label">Prezzo Amazon.it (€)</label>
+        <input type="number" step="0.01" id="wAmazonPrice" placeholder="29.90">
       </div>
     </div>
-  </main>
 
-  <!-- NAVIGATION -->
-  <nav class="bottom-nav">
-    <button class="nav-btn active" id="nav-kallax" onclick="switchTab('kallax')"><span>🔲</span>Scaffale</button>
-    <button class="nav-btn" id="nav-collection" onclick="switchTab('collection')"><span>📀</span>Collezione</button>
-    <button class="nav-btn" id="nav-add" onclick="switchTab('add')"><span>➕</span>Aggiungi</button>
-    <button class="nav-btn" id="nav-lloyd" onclick="switchTab('lloyd')"><span>🎧</span>DJ Lloyd</button>
-  </nav>
+    <div class="row-2" style="margin-bottom:10px;">
+      <a id="wAmazonDirectLink" class="btn btn-amazon" href="https://www.amazon.it/s?k=vinile&i=popular" target="_blank" rel="noopener noreferrer">Cerca su Amazon.it ↗</a>
+      <a id="wDiscogsDirectLink" class="btn btn-discogs" href="https://www.discogs.com/sell/list?format=Vinyl" target="_blank" rel="noopener noreferrer">Vedi su Discogs ↗</a>
+    </div>
 
-  <script>
-    // Chiusura immediata e indipendente dello splash screen
-    function closeSplash() {
-      const sp = document.getElementById('splash');
-      if (sp) {
-        sp.classList.add('fade-out');
-        setTimeout(() => { sp.style.display = 'none'; }, 400);
+    <div class="row-2">
+      <div>
+        <label class="label">Priorità Mercatino</label>
+        <select id="wPriority">
+          <option value="graal">Graal (Assoluta)</option>
+          <option value="alta">Alta</option>
+          <option value="normale" selected>Normale</option>
+        </select>
+      </div>
+      <div>
+        <label class="label">Genere / Anno</label>
+        <input type="text" id="wGenreYear" placeholder="Rock • 1975">
+      </div>
+    </div>
+
+    <label class="label">Note stampa (es. Prima stampa ITA, no ristampa)</label>
+    <input type="text" id="wNotes" placeholder="Note per il mercatino...">
+
+    <input type="hidden" id="wCover">
+    <input type="hidden" id="wReleaseId">
+
+    <button class="btn btn-amber" onclick="saveWishlistItem()">Salva nella Wishlist</button>
+  </div>
+</div>
+
+<!-- MODAL: IMPOSTAZIONI -->
+<div id="settingsModal" class="modal-backdrop">
+  <div class="modal-sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <strong style="font-size:16px;color:#fff;">Impostazioni & Esportazione</strong>
+      <button class="btn btn-outline" style="padding:5px 10px;" onclick="closeModal('settingsModal')">Chiudi</button>
+    </div>
+
+    <label class="label">Chiave API Google Gemini (Copertine AI)</label>
+    <input type="text" id="setGeminiKey" placeholder="Incolla qui la tua Gemini API Key (AQ... o AIza...)">
+
+    <label class="label">Token Personale Discogs</label>
+    <input type="text" id="setDiscogsToken" placeholder="XSiVCBoirlkKyeakEqUsPeyLbgcSvAoiEklLZAZQ">
+
+    <div class="row-2">
+      <div>
+        <label class="label">Righe Scaffale</label>
+        <input type="number" id="setRows" min="1" max="8" value="2">
+      </div>
+      <div>
+        <label class="label">Colonne Scaffale</label>
+        <input type="number" id="setCols" min="1" max="8" value="4">
+      </div>
+    </div>
+
+    <label class="label">Capienza Max per Cubo</label>
+    <input type="number" id="setCap" min="10" max="150" value="60">
+
+    <button class="btn btn-primary" style="margin-bottom:12px;" onclick="saveSettings()">Salva Configurazione</button>
+
+    <div style="border-top:1px solid var(--border-subtle);padding-top:12px;margin-bottom:12px;">
+      <div class="label">Salva App su Android</div>
+      <button class="btn btn-amber" onclick="downloadSelfHtml()">Scarica App (.html)</button>
+    </div>
+
+    <div style="border-top:1px solid var(--border-subtle);padding-top:12px;">
+      <div class="label">Backup Dati (Scaffale + Wishlist)</div>
+      <div class="row-2">
+        <button class="btn btn-outline" onclick="exportBackupJSON()">Esporta JSON</button>
+        <label class="btn btn-outline" style="cursor:pointer;">
+          Importa JSON
+          <input type="file" accept=".json" style="display:none;" onchange="importBackupJSON(event)">
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ANALISI GENERI -->
+<div id="genreModal" class="modal-backdrop">
+  <div class="modal-sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <strong style="font-size:16px;color:var(--amber-glow);">Analisi Generi & Riorganizzazione</strong>
+      <button class="btn btn-outline" style="padding:5px 10px;" onclick="closeModal('genreModal')">Chiudi</button>
+    </div>
+    <div id="genreAnalysisBody"></div>
+  </div>
+</div>
+
+<script>
+  window.onerror = function (msg, url, line) {
+    var b = document.getElementById('errBanner');
+    if (b) {
+      b.style.display = 'block';
+      b.textContent = 'Errore runtime: ' + msg + ' (riga ' + line + ')';
+    }
+  };
+
+  const STORAGE_KEY = 'vinylvault_dj_lloyd_v7';
+  const DEFAULT_GEMINI_KEY = '';
+  const DEFAULT_DISCOGS_TOKEN = 'XSiVCBoirlkKyeakEqUsPeyLbgcSvAoiEklLZAZQ';
+
+  let state = {
+    vinyls: [],
+    wishlist: [],
+    settings: {
+      geminiKey: DEFAULT_GEMINI_KEY,
+      discogsToken: DEFAULT_DISCOGS_TOKEN,
+      rows: 2,
+      cols: 4,
+      cubeCapacity: 60
+    },
+    subNames: ['Rock / Classic', 'Jazz / Blues / Soul', 'Pop / Cantautori', 'Elettronica / Funk', 'Colonne Sonore / Varie'],
+    selectedCube: 'A1',
+    collectionMode: 'shelf',
+    lloydIndex: 0
+  };
+
+  function loadState() {
+    let raw = null;
+    try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+    if (!raw) {
+      try { raw = sessionStorage.getItem(STORAGE_KEY); } catch (e) {}
+    }
+    if (!raw && window.name && window.name.startsWith('VV_DATA:')) {
+      raw = window.name.slice(8);
+    }
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          const mergedSettings = Object.assign({
+            geminiKey: DEFAULT_GEMINI_KEY,
+            discogsToken: DEFAULT_DISCOGS_TOKEN,
+            rows: 2,
+            cols: 4,
+            cubeCapacity: 60
+          }, parsed.settings || {});
+          if (!mergedSettings.discogsToken || mergedSettings.discogsToken === 'VinylVaultDiscogsToken2026') {
+            mergedSettings.discogsToken = DEFAULT_DISCOGS_TOKEN;
+          }
+          if (mergedSettings.geminiKey === 'AQ.Ab8RN6L_VinylVault_Default_Key') {
+            mergedSettings.geminiKey = '';
+          }
+          state = Object.assign(state, parsed);
+          state.settings = mergedSettings;
+          if (!Array.isArray(state.vinyls)) state.vinyls = [];
+          if (!Array.isArray(state.wishlist)) state.wishlist = [];
+        }
+      } catch (e) {}
+    }
+    persistState();
+  }
+
+  function persistState() {
+    const str = JSON.stringify(state);
+    try { localStorage.setItem(STORAGE_KEY, str); } catch (e) {}
+    try { sessionStorage.setItem(STORAGE_KEY, str); } catch (e) {}
+    try { window.name = 'VV_DATA:' + str; } catch (e) {}
+    updateHeaderStats();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => { t.style.display = 'none'; }, 2600);
+  }
+
+  function updateHeaderStats() {
+    const totalVal = state.vinyls.reduce((s, v) => s + (parseFloat(v.price) || 0), 0);
+    document.getElementById('headerStats').textContent =
+      `${state.vinyls.length} dischi • € ${totalVal.toFixed(0)}`;
+    document.getElementById('countShelf').textContent = state.vinyls.length;
+    document.getElementById('countWish').textContent = state.wishlist.length;
+  }
+
+  function getCubeCodes() {
+    const letters = 'ABCDEFGH';
+    const codes = [];
+    for (let r = 0; r < state.settings.rows; r++) {
+      for (let c = 1; c <= state.settings.cols; c++) {
+        codes.push(letters[r] + c);
       }
     }
-    setTimeout(closeSplash, 2500);
-  </script>
+    return codes;
+  }
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js" defer></script>
-  <script>
-    const CUBES = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4'];
-    const DEFAULT_COVER = 'icon.jpg?v=3';
-    let selectedCube = 'A1';
-    let collectionFilter = 'owned';
+  function switchTab(tabName) {
+    document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tabName).classList.add('active');
+    document.getElementById('nav-' + tabName).classList.add('active');
 
-    let state = JSON.parse(localStorage.getItem('vinylvault_data')) || {
-      discs: [],
-      discogsToken: 'XSiVCBoirlkKyeakEqUsPeyLbgcSvAoiEklLZAZQ',
-      geminiKey: ''
-    };
-
-    function persist() {
-      localStorage.setItem('vinylvault_data', JSON.stringify(state));
-      updateStats();
-    }
-
-    function switchTab(tab) {
-      document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById('view-' + tab).classList.add('active');
-      const navBtn = document.getElementById('nav-' + tab);
-      if (navBtn) navBtn.classList.add('active');
-
-      if (tab === 'kallax') renderKallax();
-      if (tab === 'collection') renderCollection();
-      if (tab === 'settings') {
-        document.getElementById('set-discogs').value = state.discogsToken || '';
-        document.getElementById('set-gemini').value = state.geminiKey || '';
+    if (tabName === 'shelf') renderShelf();
+    if (tabName === 'collection') renderCollection();
+    if (tabName === 'add') {
+      populateFormSelectors();
+      if (document.getElementById('seg-ai').classList.contains('active')) {
+        ensureAiCameraStarted();
       }
-      stopBarcodeScan();
     }
+    if (tabName === 'lloyd') pickNextLloyd();
+  }
 
-    function updateStats() {
-      const owned = state.discs.filter(d => d.status === 'owned');
-      const count = owned.reduce((acc, d) => acc + (parseInt(d.qty) || 1), 0);
-      const val = owned.reduce((acc, d) => acc + ((parseFloat(d.price) || 0) * (parseInt(d.qty) || 1)), 0);
-      document.getElementById('stats-pill').innerText = `${count} dischi • € ${Math.round(val)}`;
+  /* SCAFFALE KALLAX */
+  function renderShelf() {
+    const grid = document.getElementById('kallaxGrid');
+    const gridCols = state.settings.cols >= 3 && window.innerWidth >= 460 ? 3 : 2;
+    grid.style.gridTemplateColumns = `repeat(${gridCols}, minmax(0, 1fr))`;
+
+    const codes = getCubeCodes();
+    if (!codes.includes(state.selectedCube)) state.selectedCube = codes[0] || 'A1';
+
+    grid.innerHTML = codes.map(code => {
+      const items = state.vinyls.filter(v => v.cube === code);
+      const pct = Math.min(100, Math.round((items.length / (state.settings.cubeCapacity || 60)) * 100));
+      const subPills = [1,2,3,4,5].map(s => {
+        const cnt = items.filter(v => Number(v.sub) === s).length;
+        return `<div class="sub-pill ${cnt > 0 ? 'has-items' : ''}">S${s}:${cnt}</div>`;
+      }).join('');
+      return `
+        <div class="cube-card ${state.selectedCube === code ? 'selected' : ''}" onclick="selectCube('${code}')">
+          <div class="cube-head">
+            <span>Cubo ${code}</span>
+            <span>${items.length}/${state.settings.cubeCapacity}</span>
+          </div>
+          <div class="cube-progress"><div class="cube-progress-fill" style="width:${pct}%"></div></div>
+          <div class="sub-bars">${subPills}</div>
+        </div>
+      `;
+    }).join('');
+
+    renderCubeDetail();
+  }
+
+  function selectCube(code) {
+    state.selectedCube = code;
+    renderShelf();
+  }
+
+  function renderCubeDetail() {
+    const code = state.selectedCube;
+    const items = state.vinyls.filter(v => v.cube === code);
+    document.getElementById('selectedCubeTitle').textContent = `Cubo ${code}`;
+    document.getElementById('selectedCubeCount').textContent = `${items.length} vinili`;
+    document.getElementById('subSectionsLegend').innerHTML =
+      state.subNames.map((n, i) => `<strong>S${i+1}:</strong> ${esc(n)}`).join(' &nbsp;•&nbsp; ');
+
+    const listEl = document.getElementById('cubeVinylList');
+    if (!items.length) {
+      listEl.innerHTML = `<div style="font-size:12px;color:var(--text-muted);padding:10px 0;">Nessun vinile in questo cubo.</div>`;
+      return;
     }
+    listEl.innerHTML = items.map((v, idx) => `
+      <div class="vinyl-item">
+        <img class="vinyl-cover" src="${v.cover || defaultCover()}" alt="">
+        <div class="vinyl-info">
+          <div class="vinyl-title">${esc(v.title)}</div>
+          <div class="vinyl-artist">${esc(v.artist)}</div>
+          <div class="badge-row">
+            <span class="badge badge-amber">S${v.sub}: ${esc(state.subNames[(v.sub||1)-1] || '')} (#${idx+1})</span>
+            ${v.genre ? `<span class="badge badge-blue">${esc(v.genre)}</span>` : ''}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
 
-    function renderKallax() {
-      const grid = document.getElementById('kallax-grid');
-      grid.innerHTML = CUBES.map(c => {
-        const count = state.discs.filter(d => d.status === 'owned' && d.cube === c).reduce((a, b) => a + (parseInt(b.qty) || 1), 0);
-        const pct = Math.min(100, Math.round((count / 50) * 100));
+  /* COLLEZIONE & WISHLIST */
+  function setCollectionMode(mode) {
+    state.collectionMode = mode;
+    document.getElementById('btnModeShelf').classList.toggle('active', mode === 'shelf');
+    document.getElementById('btnModeWish').classList.toggle('active', mode === 'wish');
+    document.getElementById('wishSummaryBar').style.display = mode === 'wish' ? 'block' : 'none';
+    document.getElementById('colHeaderTitle').textContent = mode === 'wish' ? 'Wishlist Mercatini' : 'La Tua Collezione';
+    renderCollection();
+  }
+
+  function buildAmazonUrl(artist, title) {
+    const q = encodeURIComponent(`${artist || ''} ${title || ''} vinile`.trim());
+    return `https://www.amazon.it/s?k=${q}&i=popular`;
+  }
+
+  function buildDiscogsUrl(artist, title, releaseId) {
+    if (releaseId) {
+      return `https://www.discogs.com/sell/release/${encodeURIComponent(releaseId)}?ev=rb&format=Vinyl`;
+    }
+    const q = encodeURIComponent(`${artist || ''} ${title || ''}`.trim());
+    return `https://www.discogs.com/sell/list?q=${q}&format=Vinyl`;
+  }
+
+  function renderCollection() {
+    updateHeaderStats();
+    const q = (document.getElementById('searchColInput').value || '').toLowerCase().trim();
+    const container = document.getElementById('collectionList');
+
+    if (state.collectionMode === 'shelf') {
+      const filtered = state.vinyls.filter(v =>
+        `${v.artist} ${v.title} ${v.genre || ''} ${v.label || ''}`.toLowerCase().includes(q)
+      );
+      if (!filtered.length) {
+        container.innerHTML = `<div class="card" style="text-align:center;color:var(--text-muted);font-size:13px;">Nessun disco trovato nello scaffale.</div>`;
+        return;
+      }
+      container.innerHTML = filtered.map(v => `
+        <div class="vinyl-item">
+          <img class="vinyl-cover" src="${v.cover || defaultCover()}" alt="">
+          <div class="vinyl-info">
+            <div class="vinyl-title">${esc(v.title)}</div>
+            <div class="vinyl-artist">${esc(v.artist)}</div>
+            <div class="badge-row">
+              <span class="badge badge-amber">Cubo ${v.cube} • S${v.sub}</span>
+              ${v.year ? `<span class="badge">${esc(v.year)}</span>` : ''}
+              ${v.price ? `<span class="badge badge-emerald">€ ${Number(v.price).toFixed(2)}</span>` : ''}
+            </div>
+            <div style="margin-top:8px;display:flex;gap:6px;">
+              <button class="btn btn-danger" onclick="deleteVinyl('${v.id}')">Elimina</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      const filtered = state.wishlist.filter(w =>
+        `${w.artist} ${w.title} ${w.notes || ''} ${w.genreYear || ''}`.toLowerCase().includes(q)
+      );
+      const totTarget = state.wishlist.reduce((s, w) => s + (parseFloat(w.targetPrice) || 0), 0);
+      const totAmazon = state.wishlist.reduce((s, w) => s + (parseFloat(w.amazonPrice) || 0), 0);
+      document.getElementById('wishTotalTarget').textContent = `€ ${totTarget.toFixed(2)}`;
+      document.getElementById('wishTotalAmazon').textContent = `€ ${totAmazon.toFixed(2)}`;
+
+      if (!filtered.length) {
+        container.innerHTML = `<div class="card" style="text-align:center;color:var(--text-muted);font-size:13px;">Wishlist vuota. Tocca <strong>+ Wishlist</strong> in alto per aggiungere un vinile da cercare ai mercatini!</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(w => {
+        const tPrice = parseFloat(w.targetPrice) || 0;
+        const aPrice = parseFloat(w.amazonPrice) || 0;
+        let diffBadge = '';
+        if (tPrice > 0 && aPrice > 0) {
+          const diff = aPrice - tPrice;
+          if (diff > 0) {
+            diffBadge = `<span class="badge badge-emerald">Mercatino conviene (-€ ${diff.toFixed(2)})</span>`;
+          } else if (diff < 0) {
+            diffBadge = `<span class="badge badge-amber">Amazon conviene (-€ ${Math.abs(diff).toFixed(2)})</span>`;
+          }
+        }
+        const prioBadge = w.priority === 'graal'
+          ? `<span class="badge badge-rose">GRAAL</span>`
+          : (w.priority === 'alta' ? `<span class="badge badge-amber">ALTA</span>` : '');
+
+        const amzUrl = buildAmazonUrl(w.artist, w.title);
+        const dcgUrl = buildDiscogsUrl(w.artist, w.title, w.releaseId);
+
         return `
-          <div class="kube ${selectedCube === c ? 'selected' : ''}" onclick="selectCube('${c}')">
-            <div class="kube-title">Cubo ${c}</div>
-            <div class="kube-count">${count}/50</div>
-            <div class="kube-bar"><div class="kube-fill" style="width:${pct}%"></div></div>
+          <div class="vinyl-item">
+            <img class="vinyl-cover" src="${w.cover || defaultCover()}" alt="">
+            <div class="vinyl-info">
+              <div class="vinyl-title">${esc(w.title)}</div>
+              <div class="vinyl-artist">${esc(w.artist)}</div>
+              <div class="badge-row">
+                ${prioBadge}
+                ${tPrice > 0 ? `<span class="badge badge-blue">Target: € ${tPrice.toFixed(2)}</span>` : ''}
+                ${aPrice > 0 ? `<span class="badge badge-amber">Amazon: € ${aPrice.toFixed(2)}</span>` : ''}
+                ${diffBadge}
+              </div>
+              ${w.notes ? `<div style="font-size:11px;color:#cbd5e1;margin-top:5px;">Note: ${esc(w.notes)}</div>` : ''}
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;">
+                <a class="btn btn-amazon" href="${amzUrl}" target="_blank" rel="noopener noreferrer">Amazon.it ↗</a>
+                <a class="btn btn-discogs" href="${dcgUrl}" target="_blank" rel="noopener noreferrer">Discogs ↗</a>
+                <button class="btn btn-emerald" onclick="promoteWishToShelf('${w.id}')">Trovato! → Scaffale</button>
+                <button class="btn btn-danger" onclick="deleteWish('${w.id}')">Rimuovi</button>
+              </div>
+            </div>
           </div>
         `;
       }).join('');
+    }
+  }
 
-      document.getElementById('selected-cube-title').innerText = `Cubo ${selectedCube}`;
-      const list = document.getElementById('cube-discs-list');
-      const cubeDiscs = state.discs.filter(d => d.status === 'owned' && d.cube === selectedCube);
-      if (!cubeDiscs.length) {
-        list.innerHTML = `<p style="font-size:12px;color:var(--text-muted);">Nessun vinile in questo cubo.</p>`;
-      } else {
-        list.innerHTML = cubeDiscs.map(d => renderDiscCard(d)).join('');
-      }
+  function deleteVinyl(id) {
+    state.vinyls = state.vinyls.filter(v => v.id !== id);
+    persistState();
+    renderCollection();
+    showToast('Vinile rimosso dallo scaffale');
+  }
+
+  function deleteWish(id) {
+    state.wishlist = state.wishlist.filter(w => w.id !== id);
+    persistState();
+    renderCollection();
+    showToast('Rimosso dalla Wishlist');
+  }
+
+  function promoteWishToShelf(id) {
+    const idx = state.wishlist.findIndex(w => w.id === id);
+    if (idx === -1) return;
+    const item = state.wishlist[idx];
+    state.wishlist.splice(idx, 1);
+    const cubes = getCubeCodes();
+    state.vinyls.unshift({
+      id: 'v_' + Date.now(),
+      artist: item.artist,
+      title: item.title,
+      year: (item.genreYear || '').replace(/[^0-9]/g, '').slice(0, 4),
+      genre: item.genreYear || 'Rock',
+      label: '',
+      price: item.targetPrice || item.amazonPrice || '',
+      cube: cubes[0] || 'A1',
+      sub: 1,
+      cover: item.cover || '',
+      releaseId: item.releaseId || ''
+    });
+    persistState();
+    setCollectionMode('shelf');
+    showToast('Spostato nello Scaffale (Cubo A1)!');
+  }
+
+  /* WISHLIST MODAL & AUTOCOMPLETE SOLO VINILI */
+  function openWishModal() {
+    document.getElementById('wArtist').value = '';
+    document.getElementById('wTitle').value = '';
+    document.getElementById('wTargetPrice').value = '';
+    document.getElementById('wAmazonPrice').value = '';
+    document.getElementById('wPriority').value = 'normale';
+    document.getElementById('wGenreYear').value = '';
+    document.getElementById('wNotes').value = '';
+    document.getElementById('wCover').value = '';
+    document.getElementById('wReleaseId').value = '';
+    document.getElementById('acListWish').style.display = 'none';
+    updateWishExternalLinks();
+    document.getElementById('wishModal').classList.add('open');
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+  }
+
+  function updateWishExternalLinks() {
+    const artist = document.getElementById('wArtist').value.trim();
+    const title = document.getElementById('wTitle').value.trim();
+    const relId = document.getElementById('wReleaseId').value.trim();
+    document.getElementById('wAmazonDirectLink').href = buildAmazonUrl(artist, title);
+    document.getElementById('wDiscogsDirectLink').href = buildDiscogsUrl(artist, title, relId);
+  }
+
+  function onWishInputChanged() {
+    updateWishExternalLinks();
+    triggerDiscogsAC('wish');
+  }
+
+  function isVinylOnly(release) {
+    if (!release || !Array.isArray(release.format)) return false;
+    const joined = release.format.join(' ').toLowerCase();
+    const hasVinyl = joined.includes('vinyl') || joined.includes('lp') || joined.includes('12"') || joined.includes('7"') || joined.includes('10"');
+    const isNonVinyl = joined.includes('cd') || joined.includes('cassette') || joined.includes('file') || joined.includes('mp3');
+    return hasVinyl && !isNonVinyl;
+  }
+
+  let acTimer = null;
+  function triggerDiscogsAC(target) {
+    clearTimeout(acTimer);
+    const query = target === 'wish'
+      ? `${document.getElementById('wArtist').value} ${document.getElementById('wTitle').value}`.trim()
+      : `${document.getElementById('fArtist').value} ${document.getElementById('fTitle').value}`.trim();
+
+    const listEl = document.getElementById(target === 'wish' ? 'acListWish' : 'acListAdd');
+    if (query.length < 3) {
+      listEl.style.display = 'none';
+      return;
     }
 
-    function selectCube(c) {
-      selectedCube = c;
-      renderKallax();
-    }
-
-    function setCollectionFilter(f) {
-      collectionFilter = f;
-      document.getElementById('sub-owned').classList.toggle('active', f === 'owned');
-      document.getElementById('sub-wish').classList.toggle('active', f === 'wish');
-      renderCollection();
-    }
-
-    function renderCollection() {
-      const q = (document.getElementById('search-input').value || '').toLowerCase();
-      const filtered = state.discs.filter(d =>
-        d.status === collectionFilter &&
-        (`${d.artist} ${d.title} ${d.genre} ${d.label}`).toLowerCase().includes(q)
-      );
-      const container = document.getElementById('collection-list');
-      if (!filtered.length) {
-        container.innerHTML = `<div class="card" style="text-align:center;color:var(--text-muted);font-size:13px;">Nessun disco trovato.</div>`;
-      } else {
-        container.innerHTML = filtered.map(d => renderDiscCard(d)).join('');
-      }
-    }
-
-    function renderDiscCard(d) {
-      const cover = d.cover || DEFAULT_COVER;
-      return `
-        <div class="vinyl-item">
-          <img src="${cover}" class="vinyl-cover" onerror="this.src='${DEFAULT_COVER}'">
-          <div class="vinyl-info">
-            <h4>${d.artist} — ${d.title}</h4>
-            <p>${d.genre || 'Genere N/D'} • ${d.label || 'Etichetta N/D'}</p>
-            <span class="badge">${d.status === 'owned' ? 'Cubo ' + d.cube : 'Wishlist'} • € ${d.price || 0}</span>
-          </div>
-          <button class="icon-btn" style="color:var(--rose);" onclick="deleteDisc('${d.id}')">🗑️</button>
-        </div>
-      `;
-    }
-
-    function handleCoverUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const max = 320;
-          const scale = Math.min(1, max / Math.max(img.width, img.height));
-          canvas.width = img.width * scale;
-          canvas.height = img.height * scale;
-          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.78);
-          document.getElementById('f-cover').value = dataUrl;
-          document.getElementById('cover-preview').src = dataUrl;
-          document.getElementById('cover-preview-wrap').style.display = 'block';
-        };
-        img.src = ev.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function saveDisc() {
-      const artist = document.getElementById('f-artist').value.trim();
-      const title = document.getElementById('f-title').value.trim();
-      if (!artist || !title) return alert('Inserisci almeno Artista e Titolo.');
-
-      state.discs.unshift({
-        id: Date.now().toString(),
-        artist,
-        title,
-        cover: document.getElementById('f-cover').value.trim(),
-        genre: document.getElementById('f-genre').value.trim(),
-        label: document.getElementById('f-label').value.trim(),
-        cube: document.getElementById('f-cube').value,
-        status: document.getElementById('f-status').value,
-        price: parseFloat(document.getElementById('f-price').value) || 0,
-        qty: parseInt(document.getElementById('f-qty').value) || 1
-      });
-
-      persist();
-      ['f-artist', 'f-title', 'f-genre', 'f-label', 'f-cover', 'f-cover-file'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('cover-preview-wrap').style.display = 'none';
-      switchTab('collection');
-    }
-
-    function deleteDisc(id) {
-      if (!confirm('Eliminare questo vinile?')) return;
-      state.discs = state.discs.filter(d => d.id !== id);
-      persist();
-      renderKallax();
-      renderCollection();
-    }
-
-    async function searchDiscogs() {
-      const q = document.getElementById('discogs-query').value.trim();
-      if (!q) return;
-      const resDiv = document.getElementById('discogs-results');
-      resDiv.innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Ricerca su Discogs...</p>';
+    acTimer = setTimeout(async () => {
       try {
-        const isBarcode = /^\d{8,14}$/.test(q);
-        const param = isBarcode ? `barcode=${encodeURIComponent(q)}` : `q=${encodeURIComponent(q)}&type=release&format=vinyl`;
-        const resp = await fetch(`https://api.discogs.com/database/search?${param}&token=${state.discogsToken}`);
-        const data = await resp.json();
-        const items = (data.results || []).slice(0, 5);
-        if (!items.length) {
-          resDiv.innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Nessun risultato.</p>';
+        const tokenParam = state.settings.discogsToken ? `&token=${encodeURIComponent(state.settings.discogsToken)}` : '';
+        const url = `https://api.discogs.com/database/search?q=${encodeURIComponent(query)}&type=release&format=Vinyl&per_page=12${tokenParam}`;
+        const res = await fetch(url, { headers: { 'User-Agent': 'VinylVaultDJLloyd/1.0' } });
+        const data = await res.json();
+        const vinylResults = (data.results || []).filter(isVinylOnly).slice(0, 6);
+
+        if (!vinylResults.length) {
+          listEl.style.display = 'none';
           return;
         }
-        resDiv.innerHTML = items.map(item => {
-          const parts = item.title.split(' - ');
-          const artist = (parts[0] || '').replace(/'/g, "\\'");
-          const title = (parts.slice(1).join(' - ') || item.title).replace(/'/g, "\\'");
-          const genre = ((item.genre || [])[0] || '').replace(/'/g, "\\'");
-          const label = ((item.label || [])[0] || '').replace(/'/g, "\\'");
-          const cover = (item.cover_image || item.thumb || '').replace(/'/g, "\\'");
-          return `
-            <div class="vinyl-item" style="cursor:pointer;" onclick="fillForm('${artist}','${title}','${genre}','${label}','${cover}')">
-              <img src="${cover || DEFAULT_COVER}" class="vinyl-cover">
-              <div class="vinyl-info">
-                <h4>${item.title}</h4>
-                <p>${item.year || ''} • ${label}</p>
-              </div>
-              <span class="badge">Usa</span>
+
+        window._lastAcResults = vinylResults;
+        listEl.innerHTML = vinylResults.map((r, i) => `
+          <div class="ac-item" onclick="selectDiscogsAC('${target}', ${i})">
+            <img class="ac-thumb" src="${r.cover_image || r.thumb || defaultCover()}" alt="">
+            <div style="min-width:0;flex:1;">
+              <div style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(r.title)}</div>
+              <div style="font-size:10px;color:var(--amber-glow);">${esc((r.format || []).join(', '))} • ${r.year || ''}</div>
             </div>
-          `;
-        }).join('');
+          </div>
+        `).join('');
+        listEl.style.display = 'block';
       } catch (e) {
-        resDiv.innerHTML = '<p style="font-size:12px;color:var(--rose);">Errore connessione Discogs.</p>';
+        listEl.style.display = 'none';
       }
-    }
+    }, 380);
+  }
 
-    function fillForm(artist, title, genre, label, cover) {
-      document.getElementById('f-artist').value = artist;
-      document.getElementById('f-title').value = title;
-      document.getElementById('f-genre').value = genre;
-      document.getElementById('f-label').value = label;
-      if (cover) {
-        document.getElementById('f-cover').value = cover;
-        document.getElementById('cover-preview').src = cover;
-        document.getElementById('cover-preview-wrap').style.display = 'block';
+  async function selectDiscogsAC(target, index) {
+    const r = (window._lastAcResults || [])[index];
+    if (!r) return;
+    document.getElementById(target === 'wish' ? 'acListWish' : 'acListAdd').style.display = 'none';
+
+    const parts = (r.title || '').split(' - ');
+    const artist = parts.length > 1 ? parts[0].trim() : '';
+    const title = parts.length > 1 ? parts.slice(1).join(' - ').trim() : r.title;
+    const cover = r.cover_image || r.thumb || '';
+    const genre = Array.isArray(r.genre) ? r.genre.join(' / ') : '';
+
+    let lowestPrice = '';
+    try {
+      const tokenParam = state.settings.discogsToken ? `?token=${encodeURIComponent(state.settings.discogsToken)}` : '';
+      const relRes = await fetch(`https://api.discogs.com/releases/${r.id}${tokenParam}`);
+      const relData = await relRes.json();
+      if (relData && relData.lowest_price) {
+        lowestPrice = Number(relData.lowest_price).toFixed(2);
       }
-      document.getElementById('discogs-results').innerHTML = '';
+    } catch (e) {}
+
+    if (target === 'wish') {
+      document.getElementById('wArtist').value = artist;
+      document.getElementById('wTitle').value = title;
+      document.getElementById('wCover').value = cover;
+      document.getElementById('wReleaseId').value = r.id || '';
+      document.getElementById('wGenreYear').value = `${genre} ${r.year || ''}`.trim();
+      if (lowestPrice) document.getElementById('wTargetPrice').value = lowestPrice;
+      updateWishExternalLinks();
+    } else {
+      document.getElementById('fArtist').value = artist;
+      document.getElementById('fTitle').value = title;
+      document.getElementById('fYear').value = r.year || '';
+      document.getElementById('fGenre').value = genre;
+      document.getElementById('fLabel').value = `${(r.label || [])[0] || ''} ${r.catno || ''}`.trim();
+      document.getElementById('fReleaseId').value = r.id || '';
+      document.getElementById('fCoverData').value = cover;
+      if (cover) document.getElementById('formCoverPreview').src = cover;
+      if (lowestPrice) document.getElementById('fPrice').value = lowestPrice;
     }
+    showToast('Dati vinile compilati da Discogs!');
+  }
 
-    let isScanning = false;
-    function startBarcodeScan() {
-      const container = document.getElementById('scanner-container');
-      if (isScanning) { stopBarcodeScan(); return; }
-      if (typeof Quagga === 'undefined') {
-        alert('Scanner non ancora pronto, riprova tra un istante.');
-        return;
-      }
-      container.style.display = 'block';
-      isScanning = true;
-      Quagga.init({
-        inputStream: {
-          name: "Live",
-          type: "LiveStream",
-          target: document.querySelector('#interactive'),
-          constraints: { facingMode: "environment" }
-        },
-        decoder: { readers: ["ean_reader", "upc_reader"] }
-      }, err => {
-        if (err) { alert('Fotocamera non disponibile.'); stopBarcodeScan(); return; }
-        Quagga.start();
-      });
-
-      Quagga.onDetected(result => {
-        const code = result.codeResult.code;
-        stopBarcodeScan();
-        document.getElementById('discogs-query').value = code;
-        searchDiscogs();
-      });
+  function saveWishlistItem() {
+    const artist = document.getElementById('wArtist').value.trim();
+    const title = document.getElementById('wTitle').value.trim();
+    if (!artist || !title) {
+      showToast('Inserisci almeno Artista e Titolo');
+      return;
     }
+    state.wishlist.unshift({
+      id: 'w_' + Date.now(),
+      artist,
+      title,
+      targetPrice: document.getElementById('wTargetPrice').value,
+      amazonPrice: document.getElementById('wAmazonPrice').value,
+      priority: document.getElementById('wPriority').value,
+      genreYear: document.getElementById('wGenreYear').value,
+      notes: document.getElementById('wNotes').value,
+      cover: document.getElementById('wCover').value,
+      releaseId: document.getElementById('wReleaseId').value
+    });
+    persistState();
+    closeModal('wishModal');
+    document.getElementById('searchColInput').value = '';
+    switchTab('collection');
+    setCollectionMode('wish');
+    showToast('Aggiunto alla Wishlist Mercatini!');
+  }
 
-    function stopBarcodeScan() {
-      if (!isScanning || typeof Quagga === 'undefined') return;
-      Quagga.stop();
-      document.getElementById('scanner-container').style.display = 'none';
-      isScanning = false;
+  /* FORM AGGIUNGI VINILE */
+  function populateFormSelectors() {
+    const cubeSel = document.getElementById('fCube');
+    cubeSel.innerHTML = getCubeCodes().map(c => `<option value="${c}">Cubo ${c}</option>`).join('');
+    const subSel = document.getElementById('fSub');
+    subSel.innerHTML = state.subNames.map((n, i) => `<option value="${i+1}">S${i+1}: ${esc(n)}</option>`).join('');
+  }
+
+  function switchAddMode(mode) {
+    ['ai', 'bar', 'cat'].forEach(m => {
+      document.getElementById('seg-' + m).classList.toggle('active', m === mode);
+      document.getElementById('add-mode-' + m).style.display = m === mode ? 'block' : 'none';
+    });
+    if (mode === 'ai') ensureAiCameraStarted();
+  }
+
+  function saveVinylToShelf() {
+    const artist = document.getElementById('fArtist').value.trim();
+    const title = document.getElementById('fTitle').value.trim();
+    if (!artist || !title) {
+      showToast('Inserisci Artista e Titolo');
+      return;
     }
+    state.vinyls.unshift({
+      id: 'v_' + Date.now(),
+      artist,
+      title,
+      year: document.getElementById('fYear').value.trim(),
+      genre: document.getElementById('fGenre').value.trim() || 'Rock',
+      label: document.getElementById('fLabel').value.trim(),
+      price: document.getElementById('fPrice').value,
+      cube: document.getElementById('fCube').value || 'A1',
+      sub: Number(document.getElementById('fSub').value) || 1,
+      cover: document.getElementById('fCoverData').value,
+      releaseId: document.getElementById('fReleaseId').value
+    });
+    persistState();
+    resetAddForm();
+    switchTab('shelf');
+    showToast('Vinile salvato nello Scaffale!');
+  }
 
-    function quickLloyd(type) {
-      const p = document.getElementById('lloyd-prompt');
-      if (type === 'setlist') {
-        p.value = 'Crea una scaletta DJ coerente e ben mixata scegliendo tra i vinili della mia collezione, indicando ordine e passaggi.';
-      } else {
-        p.value = 'Analizza la mia collezione e dimmi quali sono i dischi più interessanti o rari che possiedo e cosa dovrei cercare nei mercatini.';
-      }
-      askDjLloyd();
+  function saveFormDirectlyToWishlist() {
+    const artist = document.getElementById('fArtist').value.trim();
+    const title = document.getElementById('fTitle').value.trim();
+    if (!artist || !title) {
+      showToast('Inserisci Artista e Titolo');
+      return;
     }
+    state.wishlist.unshift({
+      id: 'w_' + Date.now(),
+      artist,
+      title,
+      targetPrice: document.getElementById('fPrice').value,
+      amazonPrice: '',
+      priority: 'alta',
+      genreYear: `${document.getElementById('fGenre').value} ${document.getElementById('fYear').value}`.trim(),
+      notes: document.getElementById('fLabel').value,
+      cover: document.getElementById('fCoverData').value,
+      releaseId: document.getElementById('fReleaseId').value
+    });
+    persistState();
+    resetAddForm();
+    document.getElementById('searchColInput').value = '';
+    switchTab('collection');
+    setCollectionMode('wish');
+    showToast('Salvato nella Wishlist Mercatini!');
+  }
 
-    async function askDjLloyd() {
-      const prompt = document.getElementById('lloyd-prompt').value.trim();
-      if (!prompt) return;
-      const out = document.getElementById('lloyd-response');
-      out.classList.remove('hidden');
+  function resetAddForm() {
+    ['fArtist','fTitle','fYear','fGenre','fLabel','fPrice','fReleaseId','fCoverData'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('formCoverPreview').src = defaultCover();
+  }
 
-      const owned = state.discs.filter(d => d.status === 'owned');
-      if (!state.geminiKey) {
-        if (!owned.length) {
-          out.innerText = "Yo! Il tuo scaffale Kallax è ancora vuoto. Aggiungi qualche vinile e ti preparo subito una selezione su misura!";
-          return;
-        }
-        const pick = [...owned].sort(() => 0.5 - Math.random()).slice(0, 5);
-        out.innerText = `🎧 Selezione rapida di DJ Lloyd dal tuo Vault (inserisci la Gemini API Key nelle impostazioni per risposte AI complete):\n\n` +
-          pick.map((d, i) => `${i + 1}. ${d.artist} — ${d.title} [Cubo ${d.cube}]`).join('\n');
-        return;
-      }
+  /* FOTOCAMERA LIVE & GEMINI AI */
+  let activeStream = null;
+  async function startCamera(videoId, placeholderId) {
+    try {
+      if (activeStream) activeStream.getTracks().forEach(t => t.stop());
+      activeStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      const vid = document.getElementById(videoId);
+      vid.srcObject = activeStream;
+      document.getElementById(placeholderId).style.display = 'none';
+      return true;
+    } catch (e) {
+      showToast('Fotocamera non attiva: usa la galleria qui sotto');
+      return false;
+    }
+  }
 
-      out.innerText = "🎧 DJ Lloyd sta sfogliando i tuoi vinili...";
-      const catalog = owned.map(d => `- ${d.artist} - ${d.title} (${d.genre || 'N/D'}, Cubo ${d.cube})`).join('\n') || 'Collezione vuota';
+  async function ensureAiCameraStarted() {
+    const vid = document.getElementById('aiVideo');
+    if (!vid.srcObject) {
+      await startCamera('aiVideo', 'aiCamPlaceholder');
+    }
+  }
+
+  async function captureAndAnalyzeAI() {
+    const vid = document.getElementById('aiVideo');
+    if (!vid.srcObject) {
+      const ok = await startCamera('aiVideo', 'aiCamPlaceholder');
+      if (!ok) return;
+      await new Promise(r => setTimeout(r, 450));
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
+    canvas.getContext('2d').drawImage(vid, 0, 0, 512, 512);
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+    document.getElementById('fCoverData').value = dataUrl;
+    document.getElementById('formCoverPreview').src = dataUrl;
+    await analyzeCoverWithGemini(dataUrl.split(',')[1]);
+  }
+
+  function handleGalleryUpload(ev) {
+    const file = ev.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const img = new Image();
+      img.onload = async () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 480;
+        canvas.height = 480;
+        canvas.getContext('2d').drawImage(img, 0, 0, 480, 480);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        document.getElementById('fCoverData').value = dataUrl;
+        document.getElementById('formCoverPreview').src = dataUrl;
+        await analyzeCoverWithGemini(dataUrl.split(',')[1]);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function analyzeCoverWithGemini(base64Jpeg) {
+    const key = state.settings.geminiKey.trim();
+    if (!key) {
+      showToast('Copertina salvata! Inserisci chiave Gemini in Impostazioni per AI');
+      return;
+    }
+    showToast('DJ Lloyd analizza la copertina...');
+    const models = ['gemini-3-flash-preview', 'gemini-3.1-flash-lite-preview'];
+    for (const model of models) {
       try {
-        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.geminiKey}`, {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             contents: [{
-              parts: [{
-                text: `Sei DJ Lloyd, un esperto selezionatore di vinili con tono amichevole e competente. Rispondi in italiano alla richiesta dell'utente basandoti sulla sua collezione:\n\nCollezione:\n${catalog}\n\nRichiesta: ${prompt}`
-              }]
+              parts: [
+                { text: 'Identifica questo disco in vinile dalla copertina. Rispondi SOLO con JSON valido: {"artist":"","title":"","year":"","genre":"","label":""}' },
+                { inline_data: { mime_type: 'image/jpeg', data: base64Jpeg } }
+              ]
             }]
           })
         });
-        const data = await resp.json();
-        out.innerText = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'Nessuna risposta da DJ Lloyd.';
-      } catch {
-        out.innerText = 'Errore di connessione con Gemini AI. Controlla la API Key nelle impostazioni.';
-      }
+        if (!res.ok) continue;
+        const json = await res.json();
+        const rawText = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const cleaned = rawText.replace(/```json|```/g, '').trim();
+        const info = JSON.parse(cleaned);
+        if (info.artist) document.getElementById('fArtist').value = info.artist;
+        if (info.title) document.getElementById('fTitle').value = info.title;
+        if (info.year) document.getElementById('fYear').value = info.year;
+        if (info.genre) document.getElementById('fGenre').value = info.genre;
+        if (info.label) document.getElementById('fLabel').value = info.label;
+        showToast('Copertina riconosciuta da Gemini AI!');
+        return;
+      } catch (e) {}
     }
+    showToast('Copertina salvata! Compila artista/titolo manualmente');
+  }
 
-    function saveSettings() {
-      state.discogsToken = document.getElementById('set-discogs').value.trim();
-      state.geminiKey = document.getElementById('set-gemini').value.trim();
-      persist();
-      alert('Impostazioni salvate!');
-    }
-
-    function exportData() {
-      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'vinylvault_backup.json';
-      a.click();
-    }
-
-    function importData(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
+  async function startBarcodeScanner() {
+    await startCamera('barVideo', 'barCamPlaceholder');
+    if ('BarcodeDetector' in window) {
+      const detector = new BarcodeDetector({ formats: ['ean_13', 'upc_a', 'ean_8'] });
+      const vid = document.getElementById('barVideo');
+      const scanLoop = setInterval(async () => {
+        if (!vid.srcObject) { clearInterval(scanLoop); return; }
         try {
-          const imported = JSON.parse(ev.target.result);
-          if (imported.discs) {
-            state = imported;
-            persist();
-            renderKallax();
-            alert('Backup ripristinato!');
+          const codes = await detector.detect(vid);
+          if (codes.length) {
+            clearInterval(scanLoop);
+            document.getElementById('barcodeInput').value = codes[0].rawValue;
+            searchDiscogsByBarcode();
           }
-        } catch {
-          alert('File JSON non valido.');
-        }
-      };
-      reader.readAsText(file);
+        } catch (e) {}
+      }, 600);
     }
+  }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      updateStats();
-      renderKallax();
+  async function searchDiscogsByBarcode() {
+    const code = document.getElementById('barcodeInput').value.trim();
+    if (!code) return;
+    showToast('Ricerca vinile per barcode...');
+    try {
+      const tokenParam = state.settings.discogsToken ? `&token=${encodeURIComponent(state.settings.discogsToken)}` : '';
+      const res = await fetch(`https://api.discogs.com/database/search?barcode=${encodeURIComponent(code)}&format=Vinyl${tokenParam}`);
+      const data = await res.json();
+      const vinyls = (data.results || []).filter(isVinylOnly);
+      if (!vinyls.length) {
+        showToast('Nessun vinile trovato per questo barcode');
+        return;
+      }
+      window._lastAcResults = vinyls;
+      await selectDiscogsAC('add', 0);
+    } catch (e) {
+      showToast('Errore connessione Discogs');
+    }
+  }
+
+  async function searchDiscogsCatalog() {
+    const q = document.getElementById('catQueryInput').value.trim();
+    if (!q) return;
+    const resBox = document.getElementById('catResultsList');
+    resBox.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">Ricerca vinili in corso...</div>';
+    try {
+      const tokenParam = state.settings.discogsToken ? `&token=${encodeURIComponent(state.settings.discogsToken)}` : '';
+      const res = await fetch(`https://api.discogs.com/database/search?q=${encodeURIComponent(q)}&type=release&format=Vinyl&per_page=10${tokenParam}`);
+      const data = await res.json();
+      const vinyls = (data.results || []).filter(isVinylOnly);
+      if (!vinyls.length) {
+        resBox.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">Nessun vinile trovato.</div>';
+        return;
+      }
+      window._lastAcResults = vinyls;
+      resBox.innerHTML = vinyls.map((r, i) => `
+        <div class="ac-item" onclick="selectDiscogsAC('add', ${i})">
+          <img class="ac-thumb" src="${r.cover_image || r.thumb || defaultCover()}" alt="">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:12px;font-weight:700;color:#fff;">${esc(r.title)}</div>
+            <div style="font-size:10px;color:var(--amber-glow);">${esc((r.format || []).join(', '))} • ${r.year || ''}</div>
+          </div>
+        </div>
+      `).join('');
+    } catch (e) {
+      resBox.innerHTML = '<div style="font-size:12px;color:var(--rose);">Errore ricerca Discogs.</div>';
+    }
+  }
+
+  /* ANALISI GENERI */
+  function openGenreAnalysis() {
+    const body = document.getElementById('genreAnalysisBody');
+    if (!state.vinyls.length) {
+      body.innerHTML = '<div style="font-size:13px;color:var(--text-muted);">Aggiungi almeno qualche vinile nello scaffale per analizzare i generi.</div>';
+      document.getElementById('genreModal').classList.add('open');
+      return;
+    }
+    const counts = {};
+    state.vinyls.forEach(v => {
+      const g = (v.genre || 'Varie').split('/')[0].trim();
+      counts[g] = (counts[g] || 0) + 1;
     });
-  </script>
+    const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+    const top5 = [0,1,2,3,4].map(i => sorted[i] ? sorted[i][0] : state.subNames[i]);
+
+    body.innerHTML = `
+      <div style="font-size:12px;color:#cbd5e1;margin-bottom:10px;">
+        Distribuzione su <strong>${state.vinyls.length} vinili</strong>:
+      </div>
+      ${sorted.map(([g, c]) => `<div class="badge badge-blue" style="margin:0 5px 6px 0;">${esc(g)}: ${c}</div>`).join('')}
+      <div style="margin-top:12px;font-size:12px;font-weight:700;color:var(--amber-glow);">Proposta nuove 5 sottosezioni:</div>
+      <div style="font-size:12px;margin:8px 0 12px 0;line-height:1.6;">
+        ${top5.map((n, i) => `<div>S${i+1}: <s>${esc(state.subNames[i])}</s> → <strong>${esc(n)}</strong></div>`).join('')}
+      </div>
+      <button class="btn btn-amber" onclick='applyGenreReorg(${JSON.stringify(top5)})'>Applica Nomi & Riordina Vinili</button>
+    `;
+    document.getElementById('genreModal').classList.add('open');
+  }
+
+  function applyGenreReorg(newNames) {
+    state.subNames = newNames;
+    const cubes = getCubeCodes();
+    const sorted = [...state.vinyls].sort((a,b) => (a.artist || '').localeCompare(b.artist || ''));
+    sorted.forEach((v, idx) => {
+      const g = (v.genre || '').toLowerCase();
+      let subIdx = newNames.findIndex(n => g.includes(n.toLowerCase()));
+      if (subIdx === -1) subIdx = 4;
+      v.sub = subIdx + 1;
+      v.cube = cubes[Math.floor(idx / Math.max(1, Math.ceil(sorted.length / cubes.length)))] || cubes[0];
+    });
+    state.vinyls = sorted;
+    persistState();
+    closeModal('genreModal');
+    renderShelf();
+    showToast('Scaffale riorganizzato per genere!');
+  }
+
+  /* DJ LLOYD */
+  function pickNextLloyd() {
+    const container = document.getElementById('lloydDeckContainer');
+    if (!state.vinyls.length) {
+      container.innerHTML = `<div class="card" style="text-align:center;color:var(--text-muted);font-size:13px;">Aggiungi qualche vinile allo scaffale e DJ Lloyd ti consiglierà cosa mettere sul piatto!</div>`;
+      return;
+    }
+    const v = state.vinyls[state.lloydIndex % state.vinyls.length];
+    const cubeItems = state.vinyls.filter(x => x.cube === v.cube && Number(x.sub) === Number(v.sub));
+    const posInSub = cubeItems.findIndex(x => x.id === v.id) + 1;
+
+    container.innerHTML = `
+      <div class="lloyd-card">
+        <img class="lloyd-cover" src="${v.cover || defaultCover()}" alt="">
+        <div style="font-size:18px;font-weight:900;color:#fff;">${esc(v.title)}</div>
+        <div style="font-size:14px;font-weight:700;color:var(--blue-neon);margin-top:2px;">${esc(v.artist)}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">${esc(v.genre || '')} ${v.year ? '• ' + esc(v.year) : ''}</div>
+        <div class="loc-box" onclick="jumpToCube('${v.cube}')">
+          Posizione: Cubo ${v.cube} • S${v.sub} (${esc(state.subNames[(v.sub||1)-1] || '')}) • Disco #${posInSub || 1}
+        </div>
+        <div class="row-2" style="margin-top:12px;">
+          <button class="btn btn-outline" onclick="nextLloydSwipe()">Salta ↻</button>
+          <button class="btn btn-amber" onclick="jumpToCube('${v.cube}')">Vai al Cubo</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function nextLloydSwipe() {
+    state.lloydIndex++;
+    pickNextLloyd();
+  }
+
+  function jumpToCube(code) {
+    state.selectedCube = code;
+    switchTab('shelf');
+  }
+
+  /* IMPOSTAZIONI & DOWNLOAD HTML PURO */
+  function openSettings() {
+    document.getElementById('setGeminiKey').value = state.settings.geminiKey || '';
+    document.getElementById('setDiscogsToken').value = state.settings.discogsToken || DEFAULT_DISCOGS_TOKEN;
+    document.getElementById('setRows').value = state.settings.rows || 2;
+    document.getElementById('setCols').value = state.settings.cols || 4;
+    document.getElementById('setCap').value = state.settings.cubeCapacity || 60;
+    document.getElementById('settingsModal').classList.add('open');
+  }
+
+  function saveSettings() {
+    state.settings.geminiKey = document.getElementById('setGeminiKey').value.trim();
+    state.settings.discogsToken = document.getElementById('setDiscogsToken').value.trim() || DEFAULT_DISCOGS_TOKEN;
+    state.settings.rows = Math.max(1, Math.min(8, Number(document.getElementById('setRows').value) || 2));
+    state.settings.cols = Math.max(1, Math.min(8, Number(document.getElementById('setCols').value) || 4));
+    state.settings.cubeCapacity = Math.max(10, Number(document.getElementById('setCap').value) || 60);
+    persistState();
+    closeModal('settingsModal');
+    renderShelf();
+    showToast('Impostazioni salvate!');
+  }
+
+  function downloadSelfHtml() {
+    const docHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    const blob = new Blob([docHtml], { type: 'text/html;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'vinylvault-dj-lloyd.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    showToast('Download vinylvault-dj-lloyd.html avviato!');
+  }
+
+  function exportBackupJSON() {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'vinylvault-dj-lloyd-backup.json';
+    a.click();
+  }
+
+  function importBackupJSON(ev) {
+    const file = ev.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const imported = JSON.parse(e.target.result);
+        state = Object.assign(state, imported);
+        persistState();
+        closeModal('settingsModal');
+        renderShelf();
+        showToast('Backup ripristinato con successo!');
+      } catch (err) {
+        showToast('File JSON non valido');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function defaultCover() {
+    return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%230d0724'/%3E%3Ccircle cx='40' cy='40' r='26' fill='%231e1b4b' stroke='%23f59e0b' stroke-width='2'/%3E%3Ccircle cx='40' cy='40' r='7' fill='%23f59e0b'/%3E%3C/svg%3E";
+  }
+
+  function esc(str) {
+    return String(str || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  /* INIT */
+  loadState();
+  updateHeaderStats();
+  populateFormSelectors();
+  renderShelf();
+</script>
 </body>
 </html>
