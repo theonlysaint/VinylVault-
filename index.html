@@ -140,4 +140,559 @@
     /* DJ LLOYD SECTION */
     .lloyd-hero {
       display: flex; align-items: center; gap: 12px;
-      background: linear
+      background: linear-gradient(135deg, #1f1449 0%, #130b2e 100%);
+      border: 1px solid var(--border-amber); border-radius: 14px; padding: 14px; margin-bottom: 14px;
+    }
+    .lloyd-hero img {
+      width: 60px; height: 60px; border-radius: 14px; object-fit: cover; border: 2px solid var(--amber);
+    }
+    .lloyd-output {
+      background: var(--bg-input); border: 1px solid var(--border-subtle);
+      border-radius: 12px; padding: 12px; font-size: 13px; line-height: 1.5;
+      color: var(--text-main); white-space: pre-wrap; margin-top: 10px;
+    }
+
+    /* BOTTOM NAV */
+    nav.bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: #10092b;
+      border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-around;
+      padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); z-index: 50;
+    }
+    .nav-btn {
+      background: none; border: none; color: var(--text-muted); font-size: 11px;
+      font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer;
+    }
+    .nav-btn.active { color: var(--amber-glow); }
+    .nav-btn span { font-size: 18px; }
+  </style>
+</head>
+<body>
+
+  <!-- SPLASH SCREEN -->
+  <div id="splash" onclick="closeSplash()">
+    <img src="splash.gif?v=3" alt="VinylVault feat. DJ Lloyd">
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <img src="icon.jpg?v=3" alt="DJ Lloyd" class="brand-icon">
+      <div>
+        <div class="brand-title">VinylVault</div>
+        <div class="brand-sub">Feat. DJ Lloyd</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="stat-pill" id="stats-pill">0 dischi • € 0</div>
+      <button class="icon-btn" onclick="switchTab('settings')">⚙️</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- TAB 1: SCAFFALE KALLAX -->
+    <div id="view-kallax" class="tab-view active">
+      <div class="section-header">
+        <h2>Scaffale Kallax</h2>
+        <button class="btn btn-amber btn-sm" onclick="switchTab('add')">+ Aggiungi</button>
+      </div>
+      <div class="kallax-grid" id="kallax-grid"></div>
+      <div class="card">
+        <h3 id="selected-cube-title" style="color:var(--amber-glow);font-size:15px;margin-bottom:8px;">Cubo A1</h3>
+        <div id="cube-discs-list"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: COLLEZIONE & WISHLIST -->
+    <div id="view-collection" class="tab-view">
+      <div class="section-header">
+        <h2>La Tua Collezione</h2>
+        <button class="btn btn-amber btn-sm" onclick="switchTab('add')">+ Aggiungi</button>
+      </div>
+      <div class="pill-tabs">
+        <button class="pill-tab active" id="sub-owned" onclick="setCollectionFilter('owned')">In Scaffale</button>
+        <button class="pill-tab" id="sub-wish" onclick="setCollectionFilter('wish')">Wishlist Mercatini</button>
+      </div>
+      <input type="text" id="search-input" placeholder="Cerca per artista, titolo, genere o etichetta..." oninput="renderCollection()">
+      <div id="collection-list"></div>
+    </div>
+
+    <!-- TAB 3: AGGIUNGI DISCO (DISCOGS + BARCODE + COPERTINA) -->
+    <div id="view-add" class="tab-view">
+      <div class="section-header">
+        <h2>Aggiungi Vinile</h2>
+      </div>
+
+      <div class="card">
+        <label>Ricerca Discogs (Titolo o Codice a Barre)</label>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <input type="text" id="discogs-query" placeholder="Artista, album o barcode..." style="margin-bottom:0;">
+          <button class="btn btn-primary btn-sm" onclick="searchDiscogs()">Cerca</button>
+        </div>
+        <button class="btn btn-amber btn-sm" style="width:100%;" onclick="startBarcodeScan()">📷 Scansiona Codice a Barre con Fotocamera</button>
+        <div id="scanner-container" style="display:none; margin-top:10px;">
+          <video id="interactive" width="100%" height="180" style="border-radius:10px;background:#000;object-fit:cover;"></video>
+          <p style="font-size:11px;color:var(--amber-glow);margin-top:4px;text-align:center;">Inquadra il codice a barre del vinile</p>
+        </div>
+        <div id="discogs-results" style="margin-top:10px;"></div>
+      </div>
+
+      <div class="card">
+        <label>Copertina Vinile (URL o Foto/File)</label>
+        <input type="text" id="f-cover" placeholder="https://... (compilato in automatico da Discogs)">
+        <input type="file" id="f-cover-file" accept="image/*" onchange="handleCoverUpload(event)">
+        <div id="cover-preview-wrap" style="display:none;margin-bottom:12px;text-align:center;">
+          <img id="cover-preview" src="" style="width:90px;height:90px;border-radius:10px;object-fit:cover;border:1px solid var(--amber);">
+        </div>
+
+        <label>Artista *</label>
+        <input type="text" id="f-artist" placeholder="Es. Pink Floyd">
+        <label>Titolo Album *</label>
+        <input type="text" id="f-title" placeholder="Es. The Dark Side of the Moon">
+
+        <div class="row-2">
+          <div>
+            <label>Genere</label>
+            <input type="text" id="f-genre" placeholder="Rock, Jazz, House...">
+          </div>
+          <div>
+            <label>Etichetta</label>
+            <input type="text" id="f-label" placeholder="Harvest, Blue Note...">
+          </div>
+        </div>
+        <div class="row-2">
+          <div>
+            <label>Cubo Kallax</label>
+            <select id="f-cube">
+              <option value="A1">Cubo A1</option>
+              <option value="A2">Cubo A2</option>
+              <option value="A3">Cubo A3</option>
+              <option value="A4">Cubo A4</option>
+              <option value="B1">Cubo B1</option>
+              <option value="B2">Cubo B2</option>
+              <option value="B3">Cubo B3</option>
+              <option value="B4">Cubo B4</option>
+            </select>
+          </div>
+          <div>
+            <label>Stato</label>
+            <select id="f-status">
+              <option value="owned">In Scaffale</option>
+              <option value="wish">Wishlist Mercatini</option>
+            </select>
+          </div>
+        </div>
+        <div class="row-2">
+          <div>
+            <label>Prezzo / Valore (€)</label>
+            <input type="number" id="f-price" placeholder="25" value="0">
+          </div>
+          <div>
+            <label>Quantità</label>
+            <input type="number" id="f-qty" value="1" min="1">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="saveDisc()">Salva nel Vault</button>
+      </div>
+    </div>
+
+    <!-- TAB 4: DJ LLOYD AI & SETLIST -->
+    <div id="view-lloyd" class="tab-view">
+      <div class="lloyd-hero">
+        <img src="icon.jpg?v=3" alt="DJ Lloyd">
+        <div>
+          <h2 style="margin-bottom:2px;">DJ Lloyd Selector</h2>
+          <p style="font-size:12px;color:var(--text-muted);">Consigli sui tuoi vinili, scalette DJ e analisi della collezione.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <label>Chiedi a DJ Lloyd</label>
+        <textarea id="lloyd-prompt" rows="3" placeholder="Es. Crea una scaletta DJ coerente e ben mixata scegliendo tra i vinili della mia collezione..."></textarea>
+        <div class="row-2" style="margin-bottom:8px;">
+          <button class="btn btn-amber btn-sm" style="width:100%;" onclick="quickLloyd('setlist')">🎛️ Genera Setlist</button>
+          <button class="btn btn-amber btn-sm" style="width:100%;" onclick="quickLloyd('gems')">💎 Gemme del Vault</button>
+        </div>
+        <button class="btn btn-primary" onclick="askDjLloyd()">Chiedi a DJ Lloyd</button>
+        <div id="lloyd-response" class="lloyd-output hidden"></div>
+      </div>
+    </div>
+
+    <!-- TAB 5: IMPOSTAZIONI & BACKUP -->
+    <div id="view-settings" class="tab-view">
+      <h2>Impostazioni & Backup</h2>
+      <div class="card">
+        <label>Discogs Personal Access Token</label>
+        <input type="text" id="set-discogs" placeholder="Inserisci token Discogs">
+        <label>Gemini API Key (per DJ Lloyd AI)</label>
+        <input type="password" id="set-gemini" placeholder="AIzaSy...">
+        <button class="btn btn-primary" onclick="saveSettings()">Salva Impostazioni</button>
+      </div>
+      <div class="card">
+        <label>Esporta / Importa Dati JSON</label>
+        <button class="btn btn-amber" style="margin-bottom:10px;" onclick="exportData()">Scarica Backup JSON</button>
+        <input type="file" id="import-file" accept=".json" onchange="importData(event)">
+      </div>
+    </div>
+  </main>
+
+  <!-- NAVIGATION -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-kallax" onclick="switchTab('kallax')"><span>🔲</span>Scaffale</button>
+    <button class="nav-btn" id="nav-collection" onclick="switchTab('collection')"><span>📀</span>Collezione</button>
+    <button class="nav-btn" id="nav-add" onclick="switchTab('add')"><span>➕</span>Aggiungi</button>
+    <button class="nav-btn" id="nav-lloyd" onclick="switchTab('lloyd')"><span>🎧</span>DJ Lloyd</button>
+  </nav>
+
+  <script>
+    // Chiusura immediata e indipendente dello splash screen
+    function closeSplash() {
+      const sp = document.getElementById('splash');
+      if (sp) {
+        sp.classList.add('fade-out');
+        setTimeout(() => { sp.style.display = 'none'; }, 400);
+      }
+    }
+    setTimeout(closeSplash, 2500);
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js" defer></script>
+  <script>
+    const CUBES = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4'];
+    const DEFAULT_COVER = 'icon.jpg?v=3';
+    let selectedCube = 'A1';
+    let collectionFilter = 'owned';
+
+    let state = JSON.parse(localStorage.getItem('vinylvault_data')) || {
+      discs: [],
+      discogsToken: 'XSiVCBoirlkKyeakEqUsPeyLbgcSvAoiEklLZAZQ',
+      geminiKey: ''
+    };
+
+    function persist() {
+      localStorage.setItem('vinylvault_data', JSON.stringify(state));
+      updateStats();
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('view-' + tab).classList.add('active');
+      const navBtn = document.getElementById('nav-' + tab);
+      if (navBtn) navBtn.classList.add('active');
+
+      if (tab === 'kallax') renderKallax();
+      if (tab === 'collection') renderCollection();
+      if (tab === 'settings') {
+        document.getElementById('set-discogs').value = state.discogsToken || '';
+        document.getElementById('set-gemini').value = state.geminiKey || '';
+      }
+      stopBarcodeScan();
+    }
+
+    function updateStats() {
+      const owned = state.discs.filter(d => d.status === 'owned');
+      const count = owned.reduce((acc, d) => acc + (parseInt(d.qty) || 1), 0);
+      const val = owned.reduce((acc, d) => acc + ((parseFloat(d.price) || 0) * (parseInt(d.qty) || 1)), 0);
+      document.getElementById('stats-pill').innerText = `${count} dischi • € ${Math.round(val)}`;
+    }
+
+    function renderKallax() {
+      const grid = document.getElementById('kallax-grid');
+      grid.innerHTML = CUBES.map(c => {
+        const count = state.discs.filter(d => d.status === 'owned' && d.cube === c).reduce((a, b) => a + (parseInt(b.qty) || 1), 0);
+        const pct = Math.min(100, Math.round((count / 50) * 100));
+        return `
+          <div class="kube ${selectedCube === c ? 'selected' : ''}" onclick="selectCube('${c}')">
+            <div class="kube-title">Cubo ${c}</div>
+            <div class="kube-count">${count}/50</div>
+            <div class="kube-bar"><div class="kube-fill" style="width:${pct}%"></div></div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('selected-cube-title').innerText = `Cubo ${selectedCube}`;
+      const list = document.getElementById('cube-discs-list');
+      const cubeDiscs = state.discs.filter(d => d.status === 'owned' && d.cube === selectedCube);
+      if (!cubeDiscs.length) {
+        list.innerHTML = `<p style="font-size:12px;color:var(--text-muted);">Nessun vinile in questo cubo.</p>`;
+      } else {
+        list.innerHTML = cubeDiscs.map(d => renderDiscCard(d)).join('');
+      }
+    }
+
+    function selectCube(c) {
+      selectedCube = c;
+      renderKallax();
+    }
+
+    function setCollectionFilter(f) {
+      collectionFilter = f;
+      document.getElementById('sub-owned').classList.toggle('active', f === 'owned');
+      document.getElementById('sub-wish').classList.toggle('active', f === 'wish');
+      renderCollection();
+    }
+
+    function renderCollection() {
+      const q = (document.getElementById('search-input').value || '').toLowerCase();
+      const filtered = state.discs.filter(d =>
+        d.status === collectionFilter &&
+        (`${d.artist} ${d.title} ${d.genre} ${d.label}`).toLowerCase().includes(q)
+      );
+      const container = document.getElementById('collection-list');
+      if (!filtered.length) {
+        container.innerHTML = `<div class="card" style="text-align:center;color:var(--text-muted);font-size:13px;">Nessun disco trovato.</div>`;
+      } else {
+        container.innerHTML = filtered.map(d => renderDiscCard(d)).join('');
+      }
+    }
+
+    function renderDiscCard(d) {
+      const cover = d.cover || DEFAULT_COVER;
+      return `
+        <div class="vinyl-item">
+          <img src="${cover}" class="vinyl-cover" onerror="this.src='${DEFAULT_COVER}'">
+          <div class="vinyl-info">
+            <h4>${d.artist} — ${d.title}</h4>
+            <p>${d.genre || 'Genere N/D'} • ${d.label || 'Etichetta N/D'}</p>
+            <span class="badge">${d.status === 'owned' ? 'Cubo ' + d.cube : 'Wishlist'} • € ${d.price || 0}</span>
+          </div>
+          <button class="icon-btn" style="color:var(--rose);" onclick="deleteDisc('${d.id}')">🗑️</button>
+        </div>
+      `;
+    }
+
+    function handleCoverUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const max = 320;
+          const scale = Math.min(1, max / Math.max(img.width, img.height));
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.78);
+          document.getElementById('f-cover').value = dataUrl;
+          document.getElementById('cover-preview').src = dataUrl;
+          document.getElementById('cover-preview-wrap').style.display = 'block';
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveDisc() {
+      const artist = document.getElementById('f-artist').value.trim();
+      const title = document.getElementById('f-title').value.trim();
+      if (!artist || !title) return alert('Inserisci almeno Artista e Titolo.');
+
+      state.discs.unshift({
+        id: Date.now().toString(),
+        artist,
+        title,
+        cover: document.getElementById('f-cover').value.trim(),
+        genre: document.getElementById('f-genre').value.trim(),
+        label: document.getElementById('f-label').value.trim(),
+        cube: document.getElementById('f-cube').value,
+        status: document.getElementById('f-status').value,
+        price: parseFloat(document.getElementById('f-price').value) || 0,
+        qty: parseInt(document.getElementById('f-qty').value) || 1
+      });
+
+      persist();
+      ['f-artist', 'f-title', 'f-genre', 'f-label', 'f-cover', 'f-cover-file'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('cover-preview-wrap').style.display = 'none';
+      switchTab('collection');
+    }
+
+    function deleteDisc(id) {
+      if (!confirm('Eliminare questo vinile?')) return;
+      state.discs = state.discs.filter(d => d.id !== id);
+      persist();
+      renderKallax();
+      renderCollection();
+    }
+
+    async function searchDiscogs() {
+      const q = document.getElementById('discogs-query').value.trim();
+      if (!q) return;
+      const resDiv = document.getElementById('discogs-results');
+      resDiv.innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Ricerca su Discogs...</p>';
+      try {
+        const isBarcode = /^\d{8,14}$/.test(q);
+        const param = isBarcode ? `barcode=${encodeURIComponent(q)}` : `q=${encodeURIComponent(q)}&type=release&format=vinyl`;
+        const resp = await fetch(`https://api.discogs.com/database/search?${param}&token=${state.discogsToken}`);
+        const data = await resp.json();
+        const items = (data.results || []).slice(0, 5);
+        if (!items.length) {
+          resDiv.innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Nessun risultato.</p>';
+          return;
+        }
+        resDiv.innerHTML = items.map(item => {
+          const parts = item.title.split(' - ');
+          const artist = (parts[0] || '').replace(/'/g, "\\'");
+          const title = (parts.slice(1).join(' - ') || item.title).replace(/'/g, "\\'");
+          const genre = ((item.genre || [])[0] || '').replace(/'/g, "\\'");
+          const label = ((item.label || [])[0] || '').replace(/'/g, "\\'");
+          const cover = (item.cover_image || item.thumb || '').replace(/'/g, "\\'");
+          return `
+            <div class="vinyl-item" style="cursor:pointer;" onclick="fillForm('${artist}','${title}','${genre}','${label}','${cover}')">
+              <img src="${cover || DEFAULT_COVER}" class="vinyl-cover">
+              <div class="vinyl-info">
+                <h4>${item.title}</h4>
+                <p>${item.year || ''} • ${label}</p>
+              </div>
+              <span class="badge">Usa</span>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        resDiv.innerHTML = '<p style="font-size:12px;color:var(--rose);">Errore connessione Discogs.</p>';
+      }
+    }
+
+    function fillForm(artist, title, genre, label, cover) {
+      document.getElementById('f-artist').value = artist;
+      document.getElementById('f-title').value = title;
+      document.getElementById('f-genre').value = genre;
+      document.getElementById('f-label').value = label;
+      if (cover) {
+        document.getElementById('f-cover').value = cover;
+        document.getElementById('cover-preview').src = cover;
+        document.getElementById('cover-preview-wrap').style.display = 'block';
+      }
+      document.getElementById('discogs-results').innerHTML = '';
+    }
+
+    let isScanning = false;
+    function startBarcodeScan() {
+      const container = document.getElementById('scanner-container');
+      if (isScanning) { stopBarcodeScan(); return; }
+      if (typeof Quagga === 'undefined') {
+        alert('Scanner non ancora pronto, riprova tra un istante.');
+        return;
+      }
+      container.style.display = 'block';
+      isScanning = true;
+      Quagga.init({
+        inputStream: {
+          name: "Live",
+          type: "LiveStream",
+          target: document.querySelector('#interactive'),
+          constraints: { facingMode: "environment" }
+        },
+        decoder: { readers: ["ean_reader", "upc_reader"] }
+      }, err => {
+        if (err) { alert('Fotocamera non disponibile.'); stopBarcodeScan(); return; }
+        Quagga.start();
+      });
+
+      Quagga.onDetected(result => {
+        const code = result.codeResult.code;
+        stopBarcodeScan();
+        document.getElementById('discogs-query').value = code;
+        searchDiscogs();
+      });
+    }
+
+    function stopBarcodeScan() {
+      if (!isScanning || typeof Quagga === 'undefined') return;
+      Quagga.stop();
+      document.getElementById('scanner-container').style.display = 'none';
+      isScanning = false;
+    }
+
+    function quickLloyd(type) {
+      const p = document.getElementById('lloyd-prompt');
+      if (type === 'setlist') {
+        p.value = 'Crea una scaletta DJ coerente e ben mixata scegliendo tra i vinili della mia collezione, indicando ordine e passaggi.';
+      } else {
+        p.value = 'Analizza la mia collezione e dimmi quali sono i dischi più interessanti o rari che possiedo e cosa dovrei cercare nei mercatini.';
+      }
+      askDjLloyd();
+    }
+
+    async function askDjLloyd() {
+      const prompt = document.getElementById('lloyd-prompt').value.trim();
+      if (!prompt) return;
+      const out = document.getElementById('lloyd-response');
+      out.classList.remove('hidden');
+
+      const owned = state.discs.filter(d => d.status === 'owned');
+      if (!state.geminiKey) {
+        if (!owned.length) {
+          out.innerText = "Yo! Il tuo scaffale Kallax è ancora vuoto. Aggiungi qualche vinile e ti preparo subito una selezione su misura!";
+          return;
+        }
+        const pick = [...owned].sort(() => 0.5 - Math.random()).slice(0, 5);
+        out.innerText = `🎧 Selezione rapida di DJ Lloyd dal tuo Vault (inserisci la Gemini API Key nelle impostazioni per risposte AI complete):\n\n` +
+          pick.map((d, i) => `${i + 1}. ${d.artist} — ${d.title} [Cubo ${d.cube}]`).join('\n');
+        return;
+      }
+
+      out.innerText = "🎧 DJ Lloyd sta sfogliando i tuoi vinili...";
+      const catalog = owned.map(d => `- ${d.artist} - ${d.title} (${d.genre || 'N/D'}, Cubo ${d.cube})`).join('\n') || 'Collezione vuota';
+      try {
+        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${state.geminiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{
+                text: `Sei DJ Lloyd, un esperto selezionatore di vinili con tono amichevole e competente. Rispondi in italiano alla richiesta dell'utente basandoti sulla sua collezione:\n\nCollezione:\n${catalog}\n\nRichiesta: ${prompt}`
+              }]
+            }]
+          })
+        });
+        const data = await resp.json();
+        out.innerText = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'Nessuna risposta da DJ Lloyd.';
+      } catch {
+        out.innerText = 'Errore di connessione con Gemini AI. Controlla la API Key nelle impostazioni.';
+      }
+    }
+
+    function saveSettings() {
+      state.discogsToken = document.getElementById('set-discogs').value.trim();
+      state.geminiKey = document.getElementById('set-gemini').value.trim();
+      persist();
+      alert('Impostazioni salvate!');
+    }
+
+    function exportData() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'vinylvault_backup.json';
+      a.click();
+    }
+
+    function importData(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          const imported = JSON.parse(ev.target.result);
+          if (imported.discs) {
+            state = imported;
+            persist();
+            renderKallax();
+            alert('Backup ripristinato!');
+          }
+        } catch {
+          alert('File JSON non valido.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateStats();
+      renderKallax();
+    });
+  </script>
+</body>
+</html>
