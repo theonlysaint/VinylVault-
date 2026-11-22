@@ -45,7 +45,6 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  /* BANNER DIAGNOSTICO RUNTIME */
   #errBanner {
     display: none;
     position: fixed;
@@ -61,7 +60,7 @@
     font-weight: 700;
   }
 
-  /* SPLASH SCREEN SENZA CORNICE */
+  /* SPLASH SCREEN LEGGERO */
   #splash {
     position: fixed;
     inset: 0;
@@ -71,30 +70,35 @@
     align-items: center;
     justify-content: center;
     padding: 16px;
-    animation: splashAutoFade 2.6s ease-out forwards;
+    animation: splashExit 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
   #splash img {
     width: 100%;
-    max-width: 390px;
-    max-height: 92dvh;
+    max-width: 360px;
+    max-height: 85dvh;
     object-fit: contain;
     border: none;
     outline: none;
+    animation: splashPop 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   #splash.hidden { display: none !important; }
-  @keyframes splashAutoFade {
-    0%, 80% { opacity: 1; visibility: visible; pointer-events: auto; }
+  @keyframes splashPop {
+    0% { opacity: 0; transform: scale(0.93); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes splashExit {
+    0%, 75% { opacity: 1; visibility: visible; pointer-events: auto; }
     100% { opacity: 0; visibility: hidden; pointer-events: none; }
   }
 
-  /* HEADER CON NUOVO LOGO SENZA CORNICE */
+  /* HEADER CON LOGO INGRANDITO SENZA CORNICE */
   header {
     position: sticky;
     top: 0;
     z-index: 50;
     background: #10092b;
     border-bottom: 1px solid var(--border-subtle);
-    padding: 10px 14px;
+    padding: 8px 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -102,19 +106,19 @@
   .brand {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
   .logo-wrap {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
   }
   .brand-logo-img {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     object-fit: contain;
     border: none;
     border-radius: 0;
@@ -168,9 +172,18 @@
     padding: 14px 14px 92px 14px;
     max-width: 600px;
     margin: 0 auto;
+    min-height: calc(100dvh - 135px);
+    touch-action: pan-y;
   }
   .tab-view { display: none; }
-  .tab-view.active { display: block; }
+  .tab-view.active {
+    display: block;
+    animation: tabFadeIn 0.2s ease-out;
+  }
+  @keyframes tabFadeIn {
+    from { opacity: 0.65; transform: translateY(3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
   h2 {
     font-size: 20px;
@@ -421,6 +434,11 @@
     border-radius: 14px;
     padding: 11px;
     margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+  .vinyl-item:active {
+    border-color: var(--amber);
   }
   .vinyl-cover {
     width: 68px;
@@ -554,14 +572,46 @@
     pointer-events: none;
   }
 
-  /* DJ LLOYD */
+  /* DJ LLOYD TINDER CARD */
   .lloyd-card {
+    position: relative;
     background: linear-gradient(160deg, #211654 0%, #110a2e 100%);
     border: 2px solid var(--purple-neon);
     border-radius: 18px;
     padding: 16px;
     text-align: center;
     margin-bottom: 12px;
+    user-select: none;
+    touch-action: pan-y;
+    transition: transform 0.22s ease, opacity 0.22s ease, border-color 0.22s ease;
+    will-change: transform;
+  }
+  .lloyd-swipe-badge {
+    position: absolute;
+    top: 16px;
+    padding: 5px 11px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .lloyd-swipe-nope {
+    right: 16px;
+    color: #fda4af;
+    border: 2px solid var(--rose);
+    background: rgba(76, 5, 25, 0.85);
+    transform: rotate(10deg);
+  }
+  .lloyd-swipe-like {
+    left: 16px;
+    color: #6ee7b7;
+    border: 2px solid var(--emerald);
+    background: rgba(6, 78, 59, 0.85);
+    transform: rotate(-10deg);
   }
   .lloyd-cover {
     width: 175px;
@@ -572,6 +622,7 @@
     margin: 0 auto 12px auto;
     display: block;
     background: #090518;
+    pointer-events: none;
   }
   .loc-box {
     background: rgba(245, 158, 11, 0.16);
@@ -662,26 +713,25 @@
 
 <div id="errBanner"></div>
 
-<!-- SPLASH SCREEN CON NUOVO LOGO SENZA CORNICE -->
+<!-- SPLASH SCREEN -->
 <div id="splash" onclick="this.classList.add('hidden')">
-  <img src="splash.gif?v=4" alt="VinylVault feat. DJ Lloyd">
+  <img src="splash.gif?v=7" alt="VinylVault feat. DJ Lloyd">
 </div>
 
-<!-- FAILSAFE IMMEDIATO SPLASH -->
 <script>
   setTimeout(function () {
     var sp = document.getElementById('splash');
     if (sp) sp.classList.add('hidden');
-  }, 2600);
+  }, 1150);
 </script>
 
 <div id="toast"></div>
 
-<!-- HEADER CON NUOVO LOGO SENZA CORNICE -->
+<!-- HEADER CON LOGO INGRANDITO SENZA CORNICE -->
 <header>
   <div class="brand">
     <div class="logo-wrap">
-      <img src="icon.jpg?v=4" alt="DJ Lloyd" class="brand-logo-img">
+      <img src="icon.jpg?v=7" alt="DJ Lloyd" class="brand-logo-img">
     </div>
     <div>
       <div class="brand-title">VinylVault</div>
@@ -699,11 +749,11 @@
   </div>
 </header>
 
-<main>
+<main id="mainSwipeContainer">
   <!-- TAB 1: SCAFFALE -->
   <section id="tab-shelf" class="tab-view active">
     <h2>
-      <span>Scaffale</span>
+      <span>Scaffale Kallax</span>
       <button class="btn btn-outline" style="padding:6px 11px;font-size:12px;" onclick="openGenreAnalysis()">Analizza Generi</button>
     </h2>
     <div id="kallaxGrid" class="kallax-grid"></div>
@@ -751,7 +801,7 @@
       <button id="seg-cat" class="seg-btn" onclick="switchAddMode('cat')">Discogs / Cat</button>
     </div>
 
-    <!-- MODE AI: FOTOCAMERA LIVE PRINCIPALE + GALLERIA DISCRETA -->
+    <!-- MODE AI -->
     <div id="add-mode-ai" class="card">
       <div class="label">1. Scansione Live Copertina con Gemini AI</div>
       <div class="cam-box" onclick="ensureAiCameraStarted()">
@@ -800,8 +850,8 @@
       <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px;">
         <img id="formCoverPreview" class="vinyl-cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%230d0724'/%3E%3Ccircle cx='40' cy='40' r='26' fill='%231e1b4b' stroke='%23f59e0b' stroke-width='2'/%3E%3Ccircle cx='40' cy='40' r='7' fill='%23f59e0b'/%3E%3C/svg%3E" alt="Cover">
         <div style="flex:1;">
-          <div class="label">Autocompilamento Vinili Discogs</div>
-          <div style="font-size:11px;color:var(--text-muted);">Scrivi artista o titolo per compilare in automatico dati e quotazioni (solo formati in vinile).</div>
+          <div class="label">Copertina & Autocompilamento Discogs</div>
+          <div style="font-size:11px;color:var(--text-muted);">Dopo la scansione AI o la selezione da Discogs, viene salvata la copertina ufficiale del catalogo.</div>
         </div>
       </div>
 
@@ -906,6 +956,17 @@
   </button>
 </nav>
 
+<!-- MODAL: SCHEDA DETTAGLIO E MODIFICA ALBUM -->
+<div id="detailModal" class="modal-backdrop">
+  <div class="modal-sheet">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <strong style="font-size:16px;color:var(--amber-glow);">Scheda Vinile</strong>
+      <button class="btn btn-outline" style="padding:5px 10px;" onclick="closeModal('detailModal')">Chiudi</button>
+    </div>
+    <div id="detailModalBody"></div>
+  </div>
+</div>
+
 <!-- MODAL: AGGIUNGI WISHLIST -->
 <div id="wishModal" class="modal-backdrop">
   <div class="modal-sheet">
@@ -973,7 +1034,7 @@
     </div>
 
     <label class="label">Chiave API Google Gemini (Copertine AI)</label>
-    <input type="text" id="setGeminiKey" placeholder="Incolla qui la tua Gemini API Key (AQ... o AIza...)">
+    <input type="text" id="setGeminiKey" placeholder="Incolla qui la tua Gemini API Key (AIza...)">
 
     <label class="label">Token Personale Discogs</label>
     <input type="text" id="setDiscogsToken" placeholder="XSiVCBoirlkKyeakEqUsPeyLbgcSvAoiEklLZAZQ">
@@ -1035,6 +1096,7 @@
   const STORAGE_KEY = 'vinylvault_dj_lloyd_v7';
   const DEFAULT_GEMINI_KEY = '';
   const DEFAULT_DISCOGS_TOKEN = 'XSiVCBoirlkKyeakEqUsPeyLbgcSvAoiEklLZAZQ';
+  const TAB_ORDER = ['shelf', 'collection', 'add', 'lloyd'];
 
   let state = {
     vinyls: [],
@@ -1049,6 +1111,7 @@
     subNames: ['Rock / Classic', 'Jazz / Blues / Soul', 'Pop / Cantautori', 'Elettronica / Funk', 'Colonne Sonore / Varie'],
     selectedCube: 'A1',
     collectionMode: 'shelf',
+    activeTab: 'shelf',
     lloydIndex: 0
   };
 
@@ -1124,6 +1187,8 @@
   }
 
   function switchTab(tabName) {
+    if (!TAB_ORDER.includes(tabName)) return;
+    state.activeTab = tabName;
     document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-' + tabName).classList.add('active');
@@ -1139,6 +1204,44 @@
     }
     if (tabName === 'lloyd') pickNextLloyd();
   }
+
+  /* SWIPE LATERALE TRA LE SEZIONI PRINCIPALI */
+  (function initTabHorizontalSwipe() {
+    let startX = 0;
+    let startY = 0;
+    let ignoreSwipe = false;
+
+    const mainEl = document.getElementById('mainSwipeContainer');
+    mainEl.addEventListener('touchstart', function (e) {
+      if (!e.touches || e.touches.length !== 1) return;
+      if (document.querySelector('.modal-backdrop.open')) {
+        ignoreSwipe = true;
+        return;
+      }
+      if (e.target.closest('#lloydDeckContainer') || e.target.closest('input, select, textarea, .ac-list')) {
+        ignoreSwipe = true;
+        return;
+      }
+      ignoreSwipe = false;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+
+    mainEl.addEventListener('touchend', function (e) {
+      if (ignoreSwipe || !e.changedTouches || !e.changedTouches.length) return;
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+
+      if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.45) {
+        const currentIdx = TAB_ORDER.indexOf(state.activeTab || 'shelf');
+        if (dx < 0 && currentIdx < TAB_ORDER.length - 1) {
+          switchTab(TAB_ORDER[currentIdx + 1]);
+        } else if (dx > 0 && currentIdx > 0) {
+          switchTab(TAB_ORDER[currentIdx - 1]);
+        }
+      }
+    }, { passive: true });
+  })();
 
   /* SCAFFALE KALLAX */
   function renderShelf() {
@@ -1190,7 +1293,7 @@
       return;
     }
     listEl.innerHTML = items.map((v, idx) => `
-      <div class="vinyl-item">
+      <div class="vinyl-item" onclick="openVinylDetail('${v.id}')">
         <img class="vinyl-cover" src="${v.cover || defaultCover()}" alt="">
         <div class="vinyl-info">
           <div class="vinyl-title">${esc(v.title)}</div>
@@ -1241,7 +1344,7 @@
         return;
       }
       container.innerHTML = filtered.map(v => `
-        <div class="vinyl-item">
+        <div class="vinyl-item" onclick="openVinylDetail('${v.id}')">
           <img class="vinyl-cover" src="${v.cover || defaultCover()}" alt="">
           <div class="vinyl-info">
             <div class="vinyl-title">${esc(v.title)}</div>
@@ -1252,7 +1355,8 @@
               ${v.price ? `<span class="badge badge-emerald">€ ${Number(v.price).toFixed(2)}</span>` : ''}
             </div>
             <div style="margin-top:8px;display:flex;gap:6px;">
-              <button class="btn btn-danger" onclick="deleteVinyl('${v.id}')">Elimina</button>
+              <button class="btn btn-outline" style="font-size:12px;padding:7px 10px;" onclick="event.stopPropagation();openVinylDetail('${v.id}')">Scheda & Modifica</button>
+              <button class="btn btn-danger" onclick="event.stopPropagation();deleteVinyl('${v.id}')">Elimina</button>
             </div>
           </div>
         </div>
@@ -1316,10 +1420,137 @@
     }
   }
 
+  /* SCHEDA DETTAGLIO E MODIFICA SINGOLO ALBUM */
+  function openVinylDetail(id) {
+    const v = state.vinyls.find(item => item.id === id);
+    if (!v) return;
+
+    const cubeOptions = getCubeCodes().map(c =>
+      `<option value="${c}" ${v.cube === c ? 'selected' : ''}>Cubo ${c}</option>`
+    ).join('');
+
+    const subOptions = state.subNames.map((n, i) =>
+      `<option value="${i + 1}" ${Number(v.sub) === i + 1 ? 'selected' : ''}>S${i + 1}: ${esc(n)}</option>`
+    ).join('');
+
+    const body = document.getElementById('detailModalBody');
+    body.innerHTML = `
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+        <img class="vinyl-cover" style="width:92px;height:92px;" src="${v.cover || defaultCover()}" alt="">
+        <div style="min-width:0;flex:1;">
+          <div style="font-size:17px;font-weight:800;color:#fff;line-height:1.25;">${esc(v.title)}</div>
+          <div style="font-size:14px;font-weight:700;color:var(--blue-neon);margin-top:3px;">${esc(v.artist)}</div>
+          <div class="badge-row" style="margin-top:6px;">
+            ${v.year ? `<span class="badge">${esc(v.year)}</span>` : ''}
+            ${v.genre ? `<span class="badge badge-blue">${esc(v.genre)}</span>` : ''}
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="background:var(--bg-input);margin-bottom:12px;font-size:12px;line-height:1.7;">
+        <div><strong>Etichetta / Cat#:</strong> ${esc(v.label || 'Non specificata')}</div>
+        <div><strong>Release Discogs:</strong> ${esc(v.releaseId || 'N/D')}</div>
+      </div>
+
+      <div class="card" style="background:rgba(12,7,33,0.75);border-color:var(--amber);margin-bottom:12px;">
+        <div class="label" style="margin-bottom:8px;">Modifica Posizione & Valore</div>
+        <div class="row-2">
+          <div>
+            <label class="label">Cubo Scaffale</label>
+            <select id="editDetailCube">${cubeOptions}</select>
+          </div>
+          <div>
+            <label class="label">Sottosezione</label>
+            <select id="editDetailSub">${subOptions}</select>
+          </div>
+        </div>
+        <label class="label">Prezzo / Valore (€)</label>
+        <input type="number" step="0.01" id="editDetailPrice" value="${v.price !== undefined && v.price !== null ? esc(v.price) : ''}" placeholder="Es. 35.00" style="margin-bottom:10px;">
+        <button class="btn btn-amber" onclick="saveVinylDetailEdits('${v.id}')">Salva Modifiche</button>
+      </div>
+
+      <div class="row-2">
+        <a class="btn btn-discogs" href="${buildDiscogsUrl(v.artist, v.title, v.releaseId)}" target="_blank" rel="noopener noreferrer">Scheda Discogs ↗</a>
+        <a class="btn btn-amazon" href="${buildAmazonUrl(v.artist, v.title)}" target="_blank" rel="noopener noreferrer">Cerca Amazon.it ↗</a>
+      </div>
+      <button class="btn btn-outline" style="width:100%;margin-top:8px;border-color:var(--blue-neon);color:var(--blue-neon);" onclick="refreshVinylCoverFromDiscogs('${v.id}')">
+        Ricarica Copertina da Discogs
+      </button>
+    `;
+    document.getElementById('detailModal').classList.add('open');
+  }
+
+  async function refreshVinylCoverFromDiscogs(id) {
+    const v = state.vinyls.find(item => item.id === id);
+    if (!v) return;
+
+    showToast('Cerco copertina su Discogs...');
+    const tokenParam = state.settings.discogsToken
+      ? `&token=${encodeURIComponent(state.settings.discogsToken)}`
+      : '';
+
+    try {
+      let cover = '';
+      let releaseId = v.releaseId || '';
+
+      if (releaseId) {
+        const relRes = await fetch(`https://api.discogs.com/releases/${encodeURIComponent(releaseId)}?${tokenParam.replace(/^&/, '')}`);
+        const relData = await relRes.json();
+        cover = (relData.images && relData.images[0] && (relData.images[0].uri || relData.images[0].resource_url)) || '';
+      }
+
+      if (!cover) {
+        const q = `${v.artist || ''} ${v.title || ''}`.trim();
+        if (!q) {
+          showToast('Mancano artista o titolo per cercare su Discogs');
+          return;
+        }
+        const url = `https://api.discogs.com/database/search?q=${encodeURIComponent(q)}&type=release&format=Vinyl&per_page=8${tokenParam}`;
+        const res = await fetch(url, { headers: { 'User-Agent': 'VinylVaultDJLloyd/1.0' } });
+        const data = await res.json();
+        const vinylResults = (data.results || []).filter(isVinylOnly);
+        if (vinylResults.length) {
+          const best = vinylResults[0];
+          cover = best.cover_image || best.thumb || '';
+          if (best.id) releaseId = best.id;
+        }
+      }
+
+      if (!cover || cover.includes('spacer.gif')) {
+        showToast('Nessuna copertina trovata su Discogs');
+        return;
+      }
+
+      v.cover = cover;
+      if (releaseId) v.releaseId = releaseId;
+      persistState();
+      openVinylDetail(id);
+      renderCollection();
+      renderShelf();
+      showToast('Copertina aggiornata da Discogs!');
+    } catch (e) {
+      showToast('Errore durante il recupero da Discogs');
+    }
+  }
+
+  function saveVinylDetailEdits(id) {
+    const v = state.vinyls.find(item => item.id === id);
+    if (!v) return;
+    v.cube = document.getElementById('editDetailCube').value || v.cube;
+    v.sub = Number(document.getElementById('editDetailSub').value) || 1;
+    v.price = document.getElementById('editDetailPrice').value.trim();
+    persistState();
+    closeModal('detailModal');
+    renderCollection();
+    renderShelf();
+    showToast('Scheda album aggiornata!');
+  }
+
   function deleteVinyl(id) {
     state.vinyls = state.vinyls.filter(v => v.id !== id);
     persistState();
     renderCollection();
+    renderShelf();
     showToast('Vinile rimosso dallo scaffale');
   }
 
@@ -1462,7 +1693,7 @@
     if (target === 'wish') {
       document.getElementById('wArtist').value = artist;
       document.getElementById('wTitle').value = title;
-      document.getElementById('wCover').value = cover;
+      if (cover) document.getElementById('wCover').value = cover;
       document.getElementById('wReleaseId').value = r.id || '';
       document.getElementById('wGenreYear').value = `${genre} ${r.year || ''}`.trim();
       if (lowestPrice) document.getElementById('wTargetPrice').value = lowestPrice;
@@ -1474,11 +1705,44 @@
       document.getElementById('fGenre').value = genre;
       document.getElementById('fLabel').value = `${(r.label || [])[0] || ''} ${r.catno || ''}`.trim();
       document.getElementById('fReleaseId').value = r.id || '';
-      document.getElementById('fCoverData').value = cover;
-      if (cover) document.getElementById('formCoverPreview').src = cover;
+      if (cover) {
+        document.getElementById('fCoverData').value = cover;
+        document.getElementById('formCoverPreview').src = cover;
+      }
       if (lowestPrice) document.getElementById('fPrice').value = lowestPrice;
     }
-    showToast('Dati vinile compilati da Discogs!');
+    showToast('Dati e copertina vinile compilati da Discogs!');
+  }
+
+  /* CERCA AUTOMATICAMENTE LA COPERTINA SU DISCOGS DOPO IL RICONOSCIMENTO AI */
+  async function fetchDiscogsCoverForAI(artist, title, label) {
+    const q = `${artist || ''} ${title || ''}`.trim();
+    if (!q) return false;
+    try {
+      const tokenParam = state.settings.discogsToken ? `&token=${encodeURIComponent(state.settings.discogsToken)}` : '';
+      const url = `https://api.discogs.com/database/search?q=${encodeURIComponent(q)}&type=release&format=Vinyl&per_page=8${tokenParam}`;
+      const res = await fetch(url, { headers: { 'User-Agent': 'VinylVaultDJLloyd/1.0' } });
+      const data = await res.json();
+      const vinylResults = (data.results || []).filter(isVinylOnly);
+      if (!vinylResults.length) return false;
+
+      const best = vinylResults[0];
+      const catalogCover = best.cover_image || best.thumb || '';
+      if (catalogCover && !catalogCover.includes('spacer.gif')) {
+        document.getElementById('fCoverData').value = catalogCover;
+        document.getElementById('formCoverPreview').src = catalogCover;
+      }
+      if (best.id) document.getElementById('fReleaseId').value = best.id;
+      if (!document.getElementById('fYear').value && best.year) {
+        document.getElementById('fYear').value = best.year;
+      }
+      if (!document.getElementById('fLabel').value && (best.label || best.catno)) {
+        document.getElementById('fLabel').value = `${(best.label || [])[0] || ''} ${best.catno || ''}`.trim();
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   function saveWishlistItem() {
@@ -1648,7 +1912,7 @@
   async function analyzeCoverWithGemini(base64Jpeg) {
     const key = state.settings.geminiKey.trim();
     if (!key) {
-      showToast('Copertina salvata! Inserisci chiave Gemini in Impostazioni per AI');
+      showToast('Foto acquisita! Inserisci chiave Gemini in Impostazioni per AI');
       return;
     }
     showToast('DJ Lloyd analizza la copertina...');
@@ -1677,11 +1941,15 @@
         if (info.year) document.getElementById('fYear').value = info.year;
         if (info.genre) document.getElementById('fGenre').value = info.genre;
         if (info.label) document.getElementById('fLabel').value = info.label;
-        showToast('Copertina riconosciuta da Gemini AI!');
+
+        const foundCatalogCover = await fetchDiscogsCoverForAI(info.artist, info.title, info.label);
+        showToast(foundCatalogCover
+          ? 'Disco riconosciuto + copertina Discogs caricata!'
+          : 'Copertina riconosciuta da Gemini AI!');
         return;
       } catch (e) {}
     }
-    showToast('Copertina salvata! Compila artista/titolo manualmente');
+    showToast('Foto acquisita! Compila artista/titolo manualmente');
   }
 
   async function startBarcodeScanner() {
@@ -1800,19 +2068,29 @@
     showToast('Scaffale riorganizzato per genere!');
   }
 
-  /* DJ LLOYD */
+  /* DJ LLOYD CON SWIPE STILE TINDER */
   function pickNextLloyd() {
     const container = document.getElementById('lloydDeckContainer');
     if (!state.vinyls.length) {
       container.innerHTML = `<div class="card" style="text-align:center;color:var(--text-muted);font-size:13px;">Aggiungi qualche vinile allo scaffale e DJ Lloyd ti consiglierà cosa mettere sul piatto!</div>`;
       return;
     }
-    const v = state.vinyls[state.lloydIndex % state.vinyls.length];
+
+    const mood = document.getElementById('lloydMood').value;
+    let pool = state.vinyls;
+    if (mood !== 'any') {
+      const moodFiltered = state.vinyls.filter(v => (v.genre || '').toLowerCase().includes(mood));
+      if (moodFiltered.length) pool = moodFiltered;
+    }
+
+    const v = pool[state.lloydIndex % pool.length];
     const cubeItems = state.vinyls.filter(x => x.cube === v.cube && Number(x.sub) === Number(v.sub));
     const posInSub = cubeItems.findIndex(x => x.id === v.id) + 1;
 
     container.innerHTML = `
-      <div class="lloyd-card">
+      <div class="lloyd-card" id="lloydSwipeCard">
+        <div class="lloyd-swipe-badge lloyd-swipe-like" id="lloydBadgeLike">ASCOLTA</div>
+        <div class="lloyd-swipe-badge lloyd-swipe-nope" id="lloydBadgeNope">SCARTA</div>
         <img class="lloyd-cover" src="${v.cover || defaultCover()}" alt="">
         <div style="font-size:18px;font-weight:900;color:#fff;">${esc(v.title)}</div>
         <div style="font-size:14px;font-weight:700;color:var(--blue-neon);margin-top:2px;">${esc(v.artist)}</div>
@@ -1820,17 +2098,98 @@
         <div class="loc-box" onclick="jumpToCube('${v.cube}')">
           Posizione: Cubo ${v.cube} • S${v.sub} (${esc(state.subNames[(v.sub||1)-1] || '')}) • Disco #${posInSub || 1}
         </div>
-        <div class="row-2" style="margin-top:12px;">
-          <button class="btn btn-outline" onclick="nextLloydSwipe()">Salta ↻</button>
-          <button class="btn btn-amber" onclick="jumpToCube('${v.cube}')">Vai al Cubo</button>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">
+          ← Trascina a sinistra per scartare • Trascina a destra per scegliere →
+        </div>
+        <div class="row-2">
+          <button class="btn btn-danger" onclick="animateLloydDismiss()">Scarta ✕</button>
+          <button class="btn btn-amber" onclick="jumpToCube('${v.cube}')">Vai al Cubo ♥</button>
         </div>
       </div>
     `;
+
+    attachLloydTinderGestures(v.cube);
+  }
+
+  function attachLloydTinderGestures(targetCube) {
+    const card = document.getElementById('lloydSwipeCard');
+    const badgeLike = document.getElementById('lloydBadgeLike');
+    const badgeNope = document.getElementById('lloydBadgeNope');
+    if (!card) return;
+
+    let startX = 0;
+    let currentX = 0;
+    let dragging = false;
+
+    card.addEventListener('touchstart', function (e) {
+      if (!e.touches || e.touches.length !== 1) return;
+      if (e.target.closest('button')) return;
+      dragging = true;
+      startX = e.touches[0].clientX;
+      currentX = 0;
+      card.style.transition = 'none';
+    }, { passive: true });
+
+    card.addEventListener('touchmove', function (e) {
+      if (!dragging || !e.touches || !e.touches.length) return;
+      currentX = e.touches[0].clientX - startX;
+      const rot = currentX * 0.045;
+      card.style.transform = `translateX(${currentX}px) rotate(${rot}deg)`;
+
+      const ratio = Math.min(1, Math.abs(currentX) / 95);
+      if (currentX > 15) {
+        badgeLike.style.opacity = ratio;
+        badgeNope.style.opacity = 0;
+        card.style.borderColor = 'var(--emerald)';
+      } else if (currentX < -15) {
+        badgeNope.style.opacity = ratio;
+        badgeLike.style.opacity = 0;
+        card.style.borderColor = 'var(--rose)';
+      } else {
+        badgeLike.style.opacity = 0;
+        badgeNope.style.opacity = 0;
+        card.style.borderColor = 'var(--purple-neon)';
+      }
+    }, { passive: true });
+
+    card.addEventListener('touchend', function () {
+      if (!dragging) return;
+      dragging = false;
+      card.style.transition = 'transform 0.24s ease, opacity 0.24s ease, border-color 0.24s ease';
+
+      if (currentX < -85) {
+        animateLloydDismiss();
+      } else if (currentX > 85) {
+        card.style.transform = 'translateX(120%) rotate(14deg)';
+        card.style.opacity = '0';
+        setTimeout(() => jumpToCube(targetCube), 190);
+      } else {
+        card.style.transform = 'translateX(0) rotate(0deg)';
+        card.style.borderColor = 'var(--purple-neon)';
+        badgeLike.style.opacity = 0;
+        badgeNope.style.opacity = 0;
+      }
+    }, { passive: true });
+  }
+
+  function animateLloydDismiss() {
+    const card = document.getElementById('lloydSwipeCard');
+    if (card) {
+      card.style.transition = 'transform 0.22s ease, opacity 0.22s ease';
+      card.style.transform = 'translateX(-120%) rotate(-14deg)';
+      card.style.opacity = '0';
+      setTimeout(() => {
+        state.lloydIndex++;
+        pickNextLloyd();
+      }, 190);
+    } else {
+      state.lloydIndex++;
+      pickNextLloyd();
+    }
   }
 
   function nextLloydSwipe() {
-    state.lloydIndex++;
-    pickNextLloyd();
+    animateLloydDismiss();
   }
 
   function jumpToCube(code) {
