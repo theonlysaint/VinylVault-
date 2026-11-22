@@ -715,7 +715,7 @@
 
 <!-- SPLASH SCREEN -->
 <div id="splash" onclick="this.classList.add('hidden')">
-  <img src="splash.gif?v=7" alt="VinylVault feat. DJ Lloyd">
+  <img src="splash.gif?v=8" alt="VinylVault feat. DJ Lloyd">
 </div>
 
 <script>
@@ -731,7 +731,7 @@
 <header>
   <div class="brand">
     <div class="logo-wrap">
-      <img src="icon.jpg?v=7" alt="DJ Lloyd" class="brand-logo-img">
+      <img src="icon.jpg?v=8" alt="DJ Lloyd" class="brand-logo-img">
     </div>
     <div>
       <div class="brand-title">VinylVault</div>
@@ -753,7 +753,7 @@
   <!-- TAB 1: SCAFFALE -->
   <section id="tab-shelf" class="tab-view active">
     <h2>
-      <span>Scaffale</span>
+      <span>Scaffale Kallax</span>
       <button class="btn btn-outline" style="padding:6px 11px;font-size:12px;" onclick="openGenreAnalysis()">Analizza Generi</button>
     </h2>
     <div id="kallaxGrid" class="kallax-grid"></div>
@@ -850,8 +850,8 @@
       <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px;">
         <img id="formCoverPreview" class="vinyl-cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%230d0724'/%3E%3Ccircle cx='40' cy='40' r='26' fill='%231e1b4b' stroke='%23f59e0b' stroke-width='2'/%3E%3Ccircle cx='40' cy='40' r='7' fill='%23f59e0b'/%3E%3C/svg%3E" alt="Cover">
         <div style="flex:1;">
-          <div class="label">Copertina & Autocompilamento Discogs</div>
-          <div style="font-size:11px;color:var(--text-muted);">Dopo la scansione AI o la selezione da Discogs, viene salvata la copertina ufficiale del catalogo.</div>
+          <div class="label">Copertina & Prezzo Medio Discogs</div>
+          <div style="font-size:11px;color:var(--text-muted);">Dopo la scansione AI o la selezione da Discogs, vengono caricati copertina ufficiale e prezzo medio (VG+).</div>
         </div>
       </div>
 
@@ -881,7 +881,7 @@
           <input type="text" id="fLabel" placeholder="Harvest - SHVL 804">
         </div>
         <div>
-          <label class="label">Valore / Target (€)</label>
+          <label class="label">Valore Medio (€)</label>
           <input type="number" step="0.01" id="fPrice" placeholder="35.00">
         </div>
       </div>
@@ -1243,6 +1243,42 @@
     }, { passive: true });
   })();
 
+  /* RECUPERO PREZZO MEDIO DISCOGS (VG+ / MEDIA CONDIZIONI, CON FALLBACK LOWEST_PRICE) */
+  async function fetchDiscogsMedianPrice(releaseId) {
+    if (!releaseId) return '';
+    const tokenParam = state.settings.discogsToken
+      ? `?token=${encodeURIComponent(state.settings.discogsToken)}`
+      : '';
+    try {
+      const sugRes = await fetch(`https://api.discogs.com/marketplace/price_suggestions/${encodeURIComponent(releaseId)}${tokenParam}`);
+      if (sugRes.ok) {
+        const sugData = await sugRes.json();
+        const vgPlus = sugData['Very Good Plus (VG+)']?.value;
+        if (vgPlus) return Number(vgPlus).toFixed(2);
+
+        const vals = Object.values(sugData)
+          .map(x => Number(x?.value))
+          .filter(n => !isNaN(n) && n > 0);
+        if (vals.length) {
+          const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+          return avg.toFixed(2);
+        }
+      }
+    } catch (e) {}
+
+    try {
+      const relRes = await fetch(`https://api.discogs.com/releases/${encodeURIComponent(releaseId)}${tokenParam}`);
+      if (relRes.ok) {
+        const relData = await relRes.json();
+        if (relData && relData.lowest_price) {
+          return Number(relData.lowest_price).toFixed(2);
+        }
+      }
+    } catch (e) {}
+
+    return '';
+  }
+
   /* SCAFFALE KALLAX */
   function renderShelf() {
     const grid = document.getElementById('kallaxGrid');
@@ -1420,7 +1456,7 @@
     }
   }
 
-  /* SCHEDA DETTAGLIO E MODIFICA SINGOLO ALBUM */
+  /* SCHEDA DETTAGLIO E MODIFICA SINGOLO ALBUM CON ALTERNATIVE DISCOGS */
   function openVinylDetail(id) {
     const v = state.vinyls.find(item => item.id === id);
     if (!v) return;
@@ -1473,64 +1509,92 @@
         <a class="btn btn-discogs" href="${buildDiscogsUrl(v.artist, v.title, v.releaseId)}" target="_blank" rel="noopener noreferrer">Scheda Discogs ↗</a>
         <a class="btn btn-amazon" href="${buildAmazonUrl(v.artist, v.title)}" target="_blank" rel="noopener noreferrer">Cerca Amazon.it ↗</a>
       </div>
+
       <button class="btn btn-outline" style="width:100%;margin-top:8px;border-color:var(--blue-neon);color:var(--blue-neon);" onclick="refreshVinylCoverFromDiscogs('${v.id}')">
-        Ricarica Copertina da Discogs
+        Cerca / Cambia Copertina da Discogs
       </button>
+      <div id="discogsAltPicker" style="display:none;margin-top:10px;"></div>
     `;
     document.getElementById('detailModal').classList.add('open');
   }
 
+  /* MOSTRA LE ALTERNATIVE DISCOGS DA VALIDARE */
   async function refreshVinylCoverFromDiscogs(id) {
     const v = state.vinyls.find(item => item.id === id);
     if (!v) return;
 
-    showToast('Cerco copertina su Discogs...');
-    const tokenParam = state.settings.discogsToken
-      ? `&token=${encodeURIComponent(state.settings.discogsToken)}`
-      : '';
+    const picker = document.getElementById('discogsAltPicker');
+    picker.style.display = 'block';
+    picker.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:6px 0;">Cerco edizioni e copertine su Discogs...</div>';
+
+    const q = `${v.artist || ''} ${v.title || ''}`.trim();
+    if (!q) {
+      picker.innerHTML = '<div style="font-size:12px;color:var(--rose);">Mancano artista o titolo per la ricerca.</div>';
+      return;
+    }
 
     try {
-      let cover = '';
-      let releaseId = v.releaseId || '';
+      const tokenParam = state.settings.discogsToken
+        ? `&token=${encodeURIComponent(state.settings.discogsToken)}`
+        : '';
+      const url = `https://api.discogs.com/database/search?q=${encodeURIComponent(q)}&type=release&format=Vinyl&per_page=12${tokenParam}`;
+      const res = await fetch(url, { headers: { 'User-Agent': 'VinylVaultDJLloyd/1.0' } });
+      const data = await res.json();
+      const vinylResults = (data.results || [])
+        .filter(r => isVinylOnly(r) && (r.cover_image || r.thumb) && !(r.cover_image || '').includes('spacer.gif'))
+        .slice(0, 8);
 
-      if (releaseId) {
-        const relRes = await fetch(`https://api.discogs.com/releases/${encodeURIComponent(releaseId)}?${tokenParam.replace(/^&/, '')}`);
-        const relData = await relRes.json();
-        cover = (relData.images && relData.images[0] && (relData.images[0].uri || relData.images[0].resource_url)) || '';
-      }
-
-      if (!cover) {
-        const q = `${v.artist || ''} ${v.title || ''}`.trim();
-        if (!q) {
-          showToast('Mancano artista o titolo per cercare su Discogs');
-          return;
-        }
-        const url = `https://api.discogs.com/database/search?q=${encodeURIComponent(q)}&type=release&format=Vinyl&per_page=8${tokenParam}`;
-        const res = await fetch(url, { headers: { 'User-Agent': 'VinylVaultDJLloyd/1.0' } });
-        const data = await res.json();
-        const vinylResults = (data.results || []).filter(isVinylOnly);
-        if (vinylResults.length) {
-          const best = vinylResults[0];
-          cover = best.cover_image || best.thumb || '';
-          if (best.id) releaseId = best.id;
-        }
-      }
-
-      if (!cover || cover.includes('spacer.gif')) {
-        showToast('Nessuna copertina trovata su Discogs');
+      if (!vinylResults.length) {
+        picker.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">Nessuna copertina alternativa trovata su Discogs.</div>';
         return;
       }
 
-      v.cover = cover;
-      if (releaseId) v.releaseId = releaseId;
-      persistState();
-      openVinylDetail(id);
-      renderCollection();
-      renderShelf();
-      showToast('Copertina aggiornata da Discogs!');
+      window._detailAltResults = vinylResults;
+      picker.innerHTML = `
+        <div class="label" style="margin-bottom:6px;">Seleziona la stampa corretta (${vinylResults.length} trovate):</div>
+        <div style="max-height:240px;overflow-y:auto;border:1px solid var(--border-subtle);border-radius:11px;background:var(--bg-input);">
+          ${vinylResults.map((r, i) => `
+            <div class="ac-item" onclick="applyDiscogsAlternative('${v.id}', ${i})">
+              <img class="ac-thumb" style="width:48px;height:48px;" src="${r.cover_image || r.thumb}" alt="">
+              <div style="min-width:0;flex:1;">
+                <div style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(r.title)}</div>
+                <div style="font-size:10px;color:var(--amber-glow);">${esc(r.year || 'N/D')} • ${esc(r.country || '')} • ${esc((r.label || [])[0] || '')} ${esc(r.catno || '')}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
     } catch (e) {
-      showToast('Errore durante il recupero da Discogs');
+      picker.innerHTML = '<div style="font-size:12px;color:var(--rose);">Errore durante la ricerca su Discogs.</div>';
     }
+  }
+
+  /* APPLICA L'ALTERNATIVA VALIDATA + PREZZO MEDIO DISCOGS */
+  async function applyDiscogsAlternative(vinylId, altIndex) {
+    const v = state.vinyls.find(item => item.id === vinylId);
+    const r = (window._detailAltResults || [])[altIndex];
+    if (!v || !r) return;
+
+    showToast('Applico copertina e calcolo prezzo medio Discogs...');
+    v.cover = r.cover_image || r.thumb || v.cover;
+    if (r.id) v.releaseId = r.id;
+    if (r.year && !v.year) v.year = r.year;
+    if (r.label || r.catno) {
+      v.label = `${(r.label || [])[0] || ''} ${r.catno || ''}`.trim();
+    }
+
+    const medianPrice = await fetchDiscogsMedianPrice(r.id);
+    if (medianPrice) {
+      v.price = medianPrice;
+    }
+
+    persistState();
+    openVinylDetail(vinylId);
+    renderCollection();
+    renderShelf();
+    showToast(medianPrice
+      ? `Copertina aggiornata • Prezzo medio € ${medianPrice}`
+      : 'Copertina aggiornata da Discogs!');
   }
 
   function saveVinylDetailEdits(id) {
@@ -1669,6 +1733,7 @@
     }, 380);
   }
 
+  /* AUTOCOMPILAMENTO CON PREZZO MEDIO DISCOGS */
   async function selectDiscogsAC(target, index) {
     const r = (window._lastAcResults || [])[index];
     if (!r) return;
@@ -1680,15 +1745,7 @@
     const cover = r.cover_image || r.thumb || '';
     const genre = Array.isArray(r.genre) ? r.genre.join(' / ') : '';
 
-    let lowestPrice = '';
-    try {
-      const tokenParam = state.settings.discogsToken ? `?token=${encodeURIComponent(state.settings.discogsToken)}` : '';
-      const relRes = await fetch(`https://api.discogs.com/releases/${r.id}${tokenParam}`);
-      const relData = await relRes.json();
-      if (relData && relData.lowest_price) {
-        lowestPrice = Number(relData.lowest_price).toFixed(2);
-      }
-    } catch (e) {}
+    const medianPrice = await fetchDiscogsMedianPrice(r.id);
 
     if (target === 'wish') {
       document.getElementById('wArtist').value = artist;
@@ -1696,7 +1753,7 @@
       if (cover) document.getElementById('wCover').value = cover;
       document.getElementById('wReleaseId').value = r.id || '';
       document.getElementById('wGenreYear').value = `${genre} ${r.year || ''}`.trim();
-      if (lowestPrice) document.getElementById('wTargetPrice').value = lowestPrice;
+      if (medianPrice) document.getElementById('wTargetPrice').value = medianPrice;
       updateWishExternalLinks();
     } else {
       document.getElementById('fArtist').value = artist;
@@ -1705,16 +1762,18 @@
       document.getElementById('fGenre').value = genre;
       document.getElementById('fLabel').value = `${(r.label || [])[0] || ''} ${r.catno || ''}`.trim();
       document.getElementById('fReleaseId').value = r.id || '';
-      if (cover) {
+      if (cover && !cover.includes('spacer.gif')) {
         document.getElementById('fCoverData').value = cover;
         document.getElementById('formCoverPreview').src = cover;
       }
-      if (lowestPrice) document.getElementById('fPrice').value = lowestPrice;
+      if (medianPrice) document.getElementById('fPrice').value = medianPrice;
     }
-    showToast('Dati e copertina vinile compilati da Discogs!');
+    showToast(medianPrice
+      ? `Compilato da Discogs • Prezzo medio € ${medianPrice}`
+      : 'Dati e copertina vinile compilati da Discogs!');
   }
 
-  /* CERCA AUTOMATICAMENTE LA COPERTINA SU DISCOGS DOPO IL RICONOSCIMENTO AI */
+  /* RICERCA AUTOMATICA DOPO SCANSIONE AI + PREZZO MEDIO DISCOGS */
   async function fetchDiscogsCoverForAI(artist, title, label) {
     const q = `${artist || ''} ${title || ''}`.trim();
     if (!q) return false;
@@ -1732,7 +1791,11 @@
         document.getElementById('fCoverData').value = catalogCover;
         document.getElementById('formCoverPreview').src = catalogCover;
       }
-      if (best.id) document.getElementById('fReleaseId').value = best.id;
+      if (best.id) {
+        document.getElementById('fReleaseId').value = best.id;
+        const medianPrice = await fetchDiscogsMedianPrice(best.id);
+        if (medianPrice) document.getElementById('fPrice').value = medianPrice;
+      }
       if (!document.getElementById('fYear').value && best.year) {
         document.getElementById('fYear').value = best.year;
       }
@@ -1944,7 +2007,7 @@
 
         const foundCatalogCover = await fetchDiscogsCoverForAI(info.artist, info.title, info.label);
         showToast(foundCatalogCover
-          ? 'Disco riconosciuto + copertina Discogs caricata!'
+          ? 'Disco riconosciuto + copertina e prezzo medio Discogs!'
           : 'Copertina riconosciuta da Gemini AI!');
         return;
       } catch (e) {}
