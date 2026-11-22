@@ -37,81 +37,46 @@
     }
     .hidden { display: none !important; }
     
-    /* SPLASH SCREEN */
     #splash {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: #090518;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: fixed; inset: 0; z-index: 9999; background: #090518;
+      display: flex; align-items: center; justify-content: center;
       transition: opacity 0.4s ease;
     }
     #splash.fade-out { opacity: 0; pointer-events: none; }
 
-    /* HEADER */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: #10092b;
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      position: sticky; top: 0; z-index: 50; background: #10092b;
+      border-bottom: 1px solid var(--border-subtle); padding: 10px 14px;
+      display: flex; align-items: center; justify-content: space-between;
     }
     .brand { display: flex; align-items: center; gap: 10px; }
     .brand-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      object-fit: cover;
-      object-position: center 68%;
-      border: 1.5px solid var(--amber);
+      width: 42px; height: 42px; border-radius: 12px; object-fit: cover;
+      object-position: center 68%; border: 1.5px solid var(--amber);
     }
     .brand-title { font-size: 17px; font-weight: 800; color: #fff; line-height: 1.1; }
     .brand-sub { font-size: 10px; font-weight: 800; color: var(--amber-glow); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
     .header-right { display: flex; align-items: center; gap: 8px; }
     .stat-pill {
-      background: #1a1140;
-      border: 1px solid var(--border-amber);
-      border-radius: 999px;
-      padding: 5px 11px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--amber-glow);
+      background: #1a1140; border: 1px solid var(--border-amber); border-radius: 999px;
+      padding: 5px 11px; font-size: 11px; font-weight: 700; color: var(--amber-glow);
     }
     .icon-btn {
-      background: #1a1140;
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      color: var(--text-main);
-      width: 38px;
-      height: 38px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
+      background: #1a1140; border: 1px solid var(--border-subtle); border-radius: 12px;
+      color: var(--text-main); width: 38px; height: 38px; display: flex;
+      align-items: center; justify-content: center; cursor: pointer;
     }
 
-    /* MAIN */
     main { padding: 16px 14px 96px 14px; max-width: 600px; margin: 0 auto; }
     .tab-view { display: none; }
     .tab-view.active { display: block; }
     .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     h2 { font-size: 19px; font-weight: 800; }
 
-    /* KALLAX */
     .kallax-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
     .kube {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 10px 8px;
-      cursor: pointer;
-      text-align: center;
+      background: var(--bg-card); border: 1px solid var(--border-subtle);
+      border-radius: 12px; padding: 10px 8px; cursor: pointer; text-align: center;
     }
     .kube.selected { border-color: var(--amber); background: #23194d; }
     .kube-title { font-size: 13px; font-weight: 800; color: var(--amber-glow); }
@@ -119,104 +84,45 @@
     .kube-bar { height: 4px; background: #0c0721; border-radius: 4px; margin-top: 6px; overflow: hidden; }
     .kube-fill { height: 100%; background: var(--blue-neon); }
 
-    /* CARDS & FORMS */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 12px;
-    }
+    .card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
     label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--blue-neon); margin-bottom: 6px; }
     input, select {
-      width: 100%;
-      background: var(--bg-input);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 10px 12px;
-      color: #fff;
-      font-size: 14px;
-      margin-bottom: 12px;
+      width: 100%; background: var(--bg-input); border: 1px solid var(--border-subtle);
+      border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 14px; margin-bottom: 12px;
     }
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .btn {
-      border: none;
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      width: 100%;
-      color: #fff;
-    }
+    .btn { border: none; border-radius: 12px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; color: #fff; }
     .btn-primary { background: linear-gradient(90deg, var(--purple) 0%, var(--blue-neon) 100%); }
     .btn-amber { background: linear-gradient(90deg, var(--amber) 0%, #ea580c 100%); }
     .btn-sm { padding: 6px 10px; font-size: 12px; width: auto; }
 
-    /* SUB-TABS */
     .pill-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
     .pill-tab {
-      flex: 1;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      padding: 8px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
+      flex: 1; background: var(--bg-card); border: 1px solid var(--border-subtle);
+      color: var(--text-muted); padding: 8px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer;
     }
     .pill-tab.active { background: var(--purple); color: #fff; border-color: var(--purple-neon); }
 
-    /* VINYL ITEM */
     .vinyl-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
+      background: var(--bg-card); border: 1px solid var(--border-subtle);
+      border-radius: 12px; padding: 12px; margin-bottom: 10px;
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
     }
     .vinyl-info h4 { font-size: 15px; font-weight: 700; }
     .vinyl-info p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
     .badge {
-      display: inline-block;
-      background: #281d59;
-      color: var(--amber-glow);
-      font-size: 10px;
-      font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 6px;
-      margin-top: 5px;
+      display: inline-block; background: #281d59; color: var(--amber-glow);
+      font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; margin-top: 5px;
     }
 
-    /* BOTTOM NAV */
     nav.bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #10092b;
-      border-top: 1px solid var(--border-subtle);
-      display: flex;
-      justify-content: space-around;
-      padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
-      z-index: 50;
+      position: fixed; bottom: 0; left: 0; right: 0; background: #10092b;
+      border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-around;
+      padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); z-index: 50;
     }
     .nav-btn {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 11px;
-      font-weight: 700;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      cursor: pointer;
+      background: none; border: none; color: var(--text-muted); font-size: 11px;
+      font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer;
     }
     .nav-btn.active { color: var(--amber-glow); }
     .nav-btn span { font-size: 18px; }
@@ -224,12 +130,10 @@
 </head>
 <body>
 
-  <!-- SPLASH SCREEN -->
   <div id="splash" onclick="closeSplash()">
     <img src="splash.gif?v=2" alt="VinylVault feat. DJ Lloyd" style="width:100%;max-width:430px;height:100dvh;object-fit:cover;">
   </div>
 
-  <!-- HEADER -->
   <header>
     <div class="brand">
       <img src="icon.jpg?v=2" alt="DJ Lloyd" class="brand-icon">
@@ -245,7 +149,6 @@
   </header>
 
   <main>
-    <!-- TAB 1: SCAFFALE KALLAX -->
     <div id="view-kallax" class="tab-view active">
       <div class="section-header">
         <h2>Scaffale Kallax</h2>
@@ -258,7 +161,6 @@
       </div>
     </div>
 
-    <!-- TAB 2: COLLEZIONE & WISHLIST -->
     <div id="view-collection" class="tab-view">
       <div class="section-header">
         <h2>La Tua Collezione</h2>
@@ -272,7 +174,6 @@
       <div id="collection-list"></div>
     </div>
 
-    <!-- TAB 3: AGGIUNGI DISCO -->
     <div id="view-add" class="tab-view">
       <div class="section-header">
         <h2>Aggiungi Vinile</h2>
@@ -287,6 +188,15 @@
       </div>
 
       <div class="card">
+        <label>Barcode Scanner / Codice a barre</label>
+        <div style="margin-bottom:12px;">
+          <button class="btn btn-primary btn-sm" onclick="startBarcodeScan()">📷 Scansiona Codice a Barre</button>
+          <div id="scanner-container" style="display:none; margin-top:8px;">
+            <video id="interactive" width="100%" height="200" style="border-radius:10px;background:#000;"></video>
+            <p style="font-size:12px;color:var(--amber-glow);margin-top:4px;">Inquadra il codice a barre del vinile</p>
+          </div>
+        </div>
+        
         <label>Artista *</label>
         <input type="text" id="f-artist" placeholder="Es. Pink Floyd">
         <label>Titolo Album *</label>
@@ -337,7 +247,6 @@
       </div>
     </div>
 
-    <!-- TAB 4: IMPOSTAZIONI & BACKUP -->
     <div id="view-settings" class="tab-view">
       <h2>Impostazioni & Backup</h2>
       <div class="card">
@@ -353,13 +262,13 @@
     </div>
   </main>
 
-  <!-- NAVIGATION -->
   <nav class="bottom-nav">
     <button class="nav-btn active" id="nav-kallax" onclick="switchTab('kallax')"><span>🔲</span>Scaffale</button>
     <button class="nav-btn" id="nav-collection" onclick="switchTab('collection')"><span>📀</span>Collezione</button>
     <button class="nav-btn" id="nav-add" onclick="switchTab('add')"><span>➕</span>Aggiungi</button>
   </nav>
 
+  <script src="https://rawcdn.githack.com/serratus/quaggaJS/0.4.1/dist/quagga.min.js"></script>
   <script>
     const CUBES = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4'];
     let selectedCube = 'A1';
@@ -393,6 +302,8 @@
       if (tab === 'kallax') renderKallax();
       if (tab === 'collection') renderCollection();
       if (tab === 'settings') document.getElementById('set-discogs').value = state.discogsToken || '';
+      
+      stopBarcodeScan();
     }
 
     function updateStats() {
@@ -538,6 +449,55 @@
       document.getElementById('f-genre').value = genre;
       document.getElementById('f-label').value = label;
       document.getElementById('discogs-results').innerHTML = '';
+    }
+
+    let isScanning = false;
+    function startBarcodeScan() {
+      const container = document.getElementById('scanner-container');
+      if (isScanning) {
+        stopBarcodeScan();
+        return;
+      }
+      container.style.display = 'block';
+      isScanning = true;
+      Quagga.init({
+        inputStream: {
+          name: "Live",
+          type: "LiveStream",
+          target: document.querySelector('#interactive'),
+          constraints: { facingMode: "environment" }
+        },
+        decoder: { readers: ["ean_reader", "upc_reader"] }
+      }, function(err) {
+        if (err) { console.error(err); return; }
+        Quagga.start();
+      });
+
+      Quagga.onDetected(async function(result) {
+        const code = result.codeResult.code;
+        stopBarcodeScan();
+        alert('Codice rilevato: ' + code + '. Ricerca su Discogs...');
+        try {
+          const resp = await fetch(`https://api.discogs.com/database/search?barcode=${code}&token=${state.discogsToken}`);
+          const data = await resp.json();
+          if (data.results && data.results.length > 0) {
+            const item = data.results[0];
+            const parts = item.title.split(' - ');
+            fillForm(parts[0] || '', parts.slice(1).join(' - ') || item.title, ((item.genre||[])[0]||''), ((item.label||[])[0]||''));
+          } else {
+            alert('Nessun vinile trovato per questo codice a barre.');
+          }
+        } catch (e) {
+          alert('Errore durante la ricerca del codice a barre.');
+        }
+      });
+    }
+
+    function stopBarcodeScan() {
+      if (!isScanning) return;
+      Quagga.stop();
+      document.getElementById('scanner-container').style.display = 'none';
+      isScanning = false;
     }
 
     function saveSettings() {
