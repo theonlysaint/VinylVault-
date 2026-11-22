@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>VinylVault feat. DJ Lloyd</title>
+<link rel="manifest" href="manifest.json">  
 <style>
   :root {
     --bg-deep: #090518;
@@ -60,30 +61,9 @@
   }
 
   /* SPLASH SCREEN ORIGINALE CON FAILSAFE CSS */
-  #splash {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: radial-gradient(circle at 50% 38%, #25135e 0%, #090518 82%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    animation: splashAutoFade 1.35s ease-out forwards;
-  }
-  #splash.hidden { display: none !important; }
-  @keyframes splashAutoFade {
-    0%, 72% { opacity: 1; visibility: visible; pointer-events: auto; }
-    100% { opacity: 0; visibility: hidden; pointer-events: none; }
-  }
-  @keyframes extractVinyl {
-    0% { transform: translateX(0px) rotate(0deg); }
-    100% { transform: translateX(48px) rotate(55deg); }
-  }
-  .splash-record {
-    animation: extractVinyl 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    transform-origin: center;
-  }
+  <div id="splash" onclick="this.classList.add('hidden')">
+  <img src="splash.gif" alt="VinylVault feat. DJ Lloyd" style="width:100%;max-width:420px;height:100dvh;object-fit:cover;">
+</div>
 
   /* HEADER */
   header {
@@ -102,15 +82,7 @@
     align-items: center;
     gap: 10px;
   }
-  .logo-wrap {
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.55));
-  }
+  <img src="icon.jpg" alt="DJ Lloyd" style="width:42px;height:42px;border-radius:12px;object-fit:cover;object-position:center 68%;border:1.5px solid var(--amber);">
   .brand-title {
     font-size: 17px;
     font-weight: 800;
