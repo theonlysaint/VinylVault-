@@ -1,17 +1,23 @@
 {
   "name": "VinylVault feat. DJ Lloyd",
   "short_name": "VinylVault",
-  "start_url": "/VinylVault-/",
-  "scope": "/VinylVault-/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#090518",
   "theme_color": "#0d0821",
   "icons": [
     {
-      "src": "icon.jpg",
+      "src": "icon.jpg?v=6",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.jpg?v=6",
       "sizes": "512x512",
       "type": "image/jpeg",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
